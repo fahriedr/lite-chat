@@ -3,6 +3,7 @@ import { z } from 'zod'
 import {connectToDatabase} from '@/lib/database'
 import User from '@/models/User'
 import { hashPassword } from "@/lib/helper";
+import jwt from 'jsonwebtoken'
 
 const schema = z.object({
     fullname: z.string().min(6).max(30),
@@ -40,7 +41,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             return NextResponse.json("Username or email already exists", { status: 400 })
         }
 
-        const data = await User.create({
+        let data = await User.create({
             fullname: body.fullname,
             username: body.username,
             email: body.email,
@@ -48,7 +49,16 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             avatar: process.env.ROBOHASH_URL + body.username
         })
 
-        return NextResponse.json(data)
+        const token = await jwt.sign({
+            _id : data._id 
+        },process.env.SECRET_KEY!,{
+            expiresIn: "1h"
+        })
+
+        return NextResponse.json({
+            data: data,
+            token : token
+        })
     } catch (error) {
         console.log(error)
         return new NextResponse("Something went wrong " + error, { status: 500 })

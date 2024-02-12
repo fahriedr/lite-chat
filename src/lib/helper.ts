@@ -6,3 +6,10 @@ export const hashPassword = async (password: string) => {
 
     return hash
 }
+
+export const comparePassword = async (password: string, hash: string) => {
+
+    const check = await bcrypt.compare(password, hash)
+
+    return check
+}
