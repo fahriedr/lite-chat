@@ -5,7 +5,9 @@ import LoginCard from "./components/LoginCard";
 export default function Home() {
   return (
     <main className="">
-      <LoginCard/>
+      <div className={`flex flex-col justify-items-center items-center px-28 py-6`}>
+        <LoginCard/>
+      </div>
     </main>
   );
 }
