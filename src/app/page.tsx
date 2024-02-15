@@ -1,11 +1,11 @@
 import Image from "next/image";
 import About from "./about/page";
+import LoginCard from "./components/LoginCard";
 
 export default function Home() {
   return (
     <main className="">
-      <h3>This is home</h3>
-      <About/>
+      <LoginCard/>
     </main>
   );
 }

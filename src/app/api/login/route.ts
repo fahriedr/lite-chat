@@ -59,7 +59,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 	  username: checkUser.username,
 	  email: checkUser.email,
 	  avatar: checkUser.avatar,
-	  token: token
   }
 
   return NextResponse.json({

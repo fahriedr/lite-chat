@@ -7,24 +7,16 @@ export const GET = async (req: NextRequest) => {
 
     try {
 
-
-        console.log('hehe')
-
         await connectToDatabase()
 
-        // const param = await req.json()
+        const _id = req.cookies.get('user_id')?.value
         
-        console.log(req.headers.get('Authorization'))
+        const user = await User.findById(_id).exec()
 
         return NextResponse.json({
-            data: 'param'}) 
-
-        // const user = User.findOne({ _id: param.id}).exec()
-
-        // return NextResponse.json({
-        //     success: true,
-        //     data: user
-        // })
+            success: true,
+            data: user
+        })
         
     } catch (error) {
         console.log(error)

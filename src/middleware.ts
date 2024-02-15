@@ -1,11 +1,21 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken"
+import { isAuthenticated } from "./lib/jwtTokenControl";
 
+export const middleware = async (req: NextRequest) => {
 
-export const middleware = (req: NextRequest) => {
+    const result = await isAuthenticated(req)
 
+    if (!result) {
+        return NextResponse.json({ success: false, message: 'Invalid token.' }, { status: 401 })
+    }
 
+    const response = NextResponse.next()
+    response.cookies.set('user_id', result.payload?._id as string)
+
+    return response
 }
 
 export const config = {
-    matcher: ['/api/:profile']
+    matcher: ['/api/profile']
 }

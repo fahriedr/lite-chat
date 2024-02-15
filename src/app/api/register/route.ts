@@ -55,8 +55,16 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             expiresIn: "1h"
         })
 
+        const res = {
+            _id: data._id,
+            fullname: data.fullname,
+            username: data.username,
+            email: data.email,
+            avatar: data.avatar,
+        }
+
         return NextResponse.json({
-            data: data,
+            data: res,
             token : token
         })
     } catch (error) {
