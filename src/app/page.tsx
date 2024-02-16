@@ -8,8 +8,8 @@ export default function Home() {
       <Head>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
       </Head>
-      <main className="">
-        <div id="complete" className={`flex flex-col justify-items-center items-center px-28 py-6`}>
+      <main>
+        <div className={`flex justify-center items-center m-auto h-screen w-screen px-10`}>
           <LoginCard/>
         </div>
       </main>
