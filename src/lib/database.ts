@@ -1,6 +1,4 @@
-import { MongoClient } from "mongodb";
 import mongoose from "mongoose"
-import { NextRequest, NextResponse } from "next/server";
 
 declare global {
     var mongoose: any
