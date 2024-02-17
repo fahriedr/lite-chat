@@ -1,17 +1,20 @@
-import React from 'react'
+'use client';
+import React, { ButtonHTMLAttributes, ForwardRefRenderFunction } from 'react'
 
-interface Props {
-    text: string,
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
+  text: string,
 }
 
-const Button = (props: Props) => {
+const ButtonCustom: ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = ({text, ...otherProps}, ref) => {
   return (
     <div>
-        <button className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full`}>
-            {props.text}
+        <button className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full`} {...otherProps} ref={ref}>
+          {text}
         </button>
     </div>
   )
 }
+
+const Button = React.forwardRef(ButtonCustom);
 
 export default Button
