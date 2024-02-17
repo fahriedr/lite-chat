@@ -5,30 +5,35 @@ import Button from "./Button";
 import Container from "./Container";
 import TextInput from "./TextInput";
 import loginImage from "../../../public/images/login.png";
-import { loginApi } from "@/utils/api/authApi";
+import { registerApi } from "@/utils/api/authApi";
 
 interface Props {
   updateSession: () => void
 }
 
-const LoginCard = ({ updateSession = () => {}}: Props) => {
+const RegisterCard = ({ updateSession = () => {}}: Props) => {
 
   const [username, setUsername] = useState('')
+  const [fullname, setFullname] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const onLogin = async () => {
+  const onRegister = async () => {
 
-    const res = await loginApi({
+    const res = await registerApi({
       data: {
+        fullname: fullname,
         username: username,
-        password: password
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
       } 
     })
 
     console.log(res, 'here')
 
   }
-
   return (
     <div className={`flex flex-row w-[100%] h-[70%] md:w-[70%] md:rounded-full`}>
       <div className={`hidden md:flex w-[60%]`}>
@@ -37,26 +42,35 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
       <div className="flex flex-col w-[100%] md:w-[40%]">
         <div className={`flex flex-col px-10 py-4 bg-[#202C33] h-full`}>
           <Container>
-            <span className="font-bold text-2xl text-center">Login</span>
+            <span className="font-bold text-2xl text-center">Register</span>
+          </Container>
+          <Container>
+            <TextInput type="text" label={'Fullname'} name="username" value={fullname} onChange={(e) => setFullname(e.target.value)}/>
           </Container>
           <Container>
             <TextInput type="text" label={'Username'} name="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
           </Container>
           <Container>
+            <TextInput type="text" label={'Email'} name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          </Container>
+          <Container>
             <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           </Container>
           <Container>
-            <Button text="Login" onClick={onLogin}>
+            <TextInput type="password" label={'Confirm Password'} name="confirmPassowrd" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
+          </Container>
+          <Container>
+            <Button text="Login" onClick={onRegister}>
             </Button>
           </Container>
 
           <Container>
-            Doesn't Have Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Register</span>
+            Already have an Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Login</span>
           </Container>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginCard;
+export default RegisterCard

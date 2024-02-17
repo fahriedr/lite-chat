@@ -1,8 +1,14 @@
+"use client"
 import About from "./about/page";
 import LoginCard from "./components/LoginCard";
 import Head from "next/head";
+import RegisterCard from "./components/RegisterCard";
+import { useState } from "react";
 
 export default function Home() {
+
+  const [card, setCard] = useState('login')
+
   return (
     <>
       <Head>
@@ -10,7 +16,10 @@ export default function Home() {
       </Head>
       <main>
         <div className={`flex justify-center items-center m-auto h-screen w-screen px-10`}>
-          <LoginCard/>
+          {
+            card == 'login' ? <LoginCard updateSession={() => {setCard('register')}}/> 
+            : <RegisterCard updateSession={() => {setCard('login')}}/>
+          }
         </div>
       </main>
     </>

@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { ForwardRefRenderFunction, ReactNode } from 'react'
 
-const Container: React.FC<{children: React.ReactNode}>= ({children}) => {
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: ReactNode,
+}
+
+const Container: ForwardRefRenderFunction<HTMLDivElement, ContainerProps>= ({children, ...otherProps}) => {
   return (
     <div 
-        className={`w-100 my-[12px]`}>
+        className={`w-100 my-[8px]`}>
         {children}
     </div>
   )
