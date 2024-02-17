@@ -3,6 +3,7 @@ const nextConfig = {
     experimental: {
         appDir: true,
         serverComponentsExternalPackages: ["mongoose"],
+        esmExternals: "loose",
       },
       webpack(config) {
         config.experiments = {

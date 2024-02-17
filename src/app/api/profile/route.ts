@@ -1,7 +1,6 @@
 import { connectToDatabase } from "@/lib/database";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
 export const GET = async (req: NextRequest) => {
 
