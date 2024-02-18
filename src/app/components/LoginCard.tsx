@@ -1,11 +1,13 @@
 'use client';
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import Container from "./Container";
 import TextInput from "./TextInput";
 import loginImage from "../../../public/images/login.png";
 import { loginApi } from "@/utils/api/authApi";
+import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie'
 
 interface Props {
   updateSession: () => void
@@ -25,8 +27,12 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
       } 
     })
 
-    console.log(res, 'here')
+    if(res?.success === false){
+      toast.error(res.message)
+    }
 
+    Cookies.set('token', res.data.token)
+    Cookies.set('user', res.data.data)
   }
 
   return (

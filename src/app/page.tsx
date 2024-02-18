@@ -4,6 +4,7 @@ import LoginCard from "./components/LoginCard";
 import Head from "next/head";
 import RegisterCard from "./components/RegisterCard";
 import { useState } from "react";
+import {Toaster} from 'react-hot-toast';
 
 export default function Home() {
 
@@ -22,6 +23,7 @@ export default function Home() {
           }
         </div>
       </main>
+      <Toaster />
     </>
   );
 }

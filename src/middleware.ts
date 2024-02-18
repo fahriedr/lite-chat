@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken"
 import { isAuthenticated } from "./lib/jwtTokenControl";
 
 export const middleware = async (req: NextRequest) => {

@@ -1,5 +1,5 @@
 import { fetchApi } from "@/lib/helper"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 
 interface LoginProps {
     data: {
@@ -21,17 +21,13 @@ interface RegisterProps {
 
 export const loginApi = async (props: LoginProps) => {
 
-    try {
-        const res = await fetchApi({
-            url: '/api/login',
-            method: 'POST',
-            data: props.data
-        })
-    
-        return res
-    } catch (error) {
-        console.log(error)
-    }
+    const res  = await fetchApi({
+        url: '/api/login',
+        method: 'POST',
+        data: props.data
+    })
+
+    return res
 
 }
 
