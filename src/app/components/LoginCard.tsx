@@ -8,6 +8,8 @@ import loginImage from "../../../public/images/login.png";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie'
+import { redirect, useRouter } from "next/navigation";
+import Head from "next/head";
 
 interface Props {
   updateSession: () => void
@@ -17,8 +19,13 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const router = useRouter()
 
   const onLogin = async () => {
+
+    setLoading(true)
 
     const res = await loginApi({
       data: {
@@ -29,10 +36,17 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
     if(res?.success === false){
       toast.error(res.message)
+      setLoading(false)
+
+      return
     }
 
-    Cookies.set('token', res.data.token)
-    Cookies.set('user', res.data.data)
+    Cookies.set('token', res?.data.token)
+
+    setLoading(false)
+
+    router.push('/profile')
+
   }
 
   return (
@@ -42,19 +56,20 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
       </div>
       <div className="flex flex-col w-[100%] md:w-[40%]">
         <div className={`flex flex-col px-10 py-4 bg-[#202C33] h-full`}>
-          <Container>
-            <span className="font-bold text-2xl text-center">Login</span>
-          </Container>
-          <Container>
-            <TextInput type="text" label={'Username'} name="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-          </Container>
-          <Container>
-            <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-          </Container>
-          <Container>
-            <Button text="Login" onClick={onLogin}>
-            </Button>
-          </Container>
+          <form action={onLogin}>
+            <Container>
+              <span className="font-bold text-2xl text-center">Login</span>
+            </Container>
+            <Container>
+              <TextInput type="text" label={'Username'} name="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+            </Container>
+            <Container>
+              <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            </Container>
+            <Container>
+              <Button text="Login" onClick={onLogin} loading={loading}/>
+            </Container>
+          </form>
 
           <Container>
             Doesn't Have Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Register</span>

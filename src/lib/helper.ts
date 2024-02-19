@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
+import { redirect } from 'next/navigation'
 
 interface FetchProps {
     url: string,
@@ -35,7 +36,7 @@ export const fetchApi = async (props: FetchProps) => {
             'Content-Type': 'application/json',
         }
     
-        if (Cookies.get('token')) {
+        if (await checkAuth()) {
             const token = Cookies.get('token')
             headers['Authorization'] = 'Bearer ' + token
         }
@@ -75,4 +76,15 @@ export const fetchApi = async (props: FetchProps) => {
             console.log(error)
         }
     }
+}
+
+export const checkAuth = async () => {
+
+    const checkToken = Cookies.get('token')
+
+    if(!checkToken) {
+        return false
+    }
+
+    return true
 }

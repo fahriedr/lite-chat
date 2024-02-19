@@ -33,15 +33,11 @@ export const loginApi = async (props: LoginProps) => {
 
 export const registerApi = async (props: RegisterProps) => {
 
-    try {
-        const res = await axios({
-            url: '/api/register',
-            method: 'POST',
-            data: props.data
-        })
+    const res = await axios({
+        url: '/api/register',
+        method: 'POST',
+        data: props.data
+    })
 
-        return res
-    } catch (error) {
-        console.log(error)
-    }
+    return res
 }

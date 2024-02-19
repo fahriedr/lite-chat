@@ -14,6 +14,9 @@ export default function Home() {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+        <title>
+          Lite Chat | Auth
+        </title>
       </Head>
       <main>
         <div className={`flex justify-center items-center m-auto h-screen w-screen px-10`}>
