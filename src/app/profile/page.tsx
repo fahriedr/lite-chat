@@ -1,21 +1,33 @@
 'use client'
+import { checkAuth, logout } from '@/lib/helper';
+import { User } from '@/types';
 import { getProfileApi } from '@/utils/api/userApi';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { redirect, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { User, useUserStore } from '../../store/user';
+import { useUserStore } from '../../store/user';
 import Button from '../components/Button';
 
 const Profile = () => {
 
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const {user, userAction} = useUserStore((state) => state)
 
-  const logout = () => {
+  const imageLoader = () => {
+    return user.avatar
+  }
 
+  const getProfile = async () => {
+
+    const user: User = await getProfileApi()
+
+    userAction(user)
+  }
+
+  const logout = async () => {
     setLoading(true)
-
     Cookies.remove('token')
 
     setLoading(false)
@@ -23,21 +35,8 @@ const Profile = () => {
     router.push('/')
   }
 
-  const imageLoader = () => {
-    return user.avatar
-  }
-
-  console.log(user.avatar, 'user')
-
-  const getProfile = async () => {
-
-    const user = await getProfileApi()
-
-    console.log(user, 'user')
-  }
-
   useEffect(() => {
-    // getProfile()
+    getProfile()
   }, [])
   
   

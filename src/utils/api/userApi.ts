@@ -1,4 +1,5 @@
 import { fetchApi } from "@/lib/helper"
+import { User } from "../../types/index"
 
 
 export const getProfileApi = async () => {
@@ -7,5 +8,7 @@ export const getProfileApi = async () => {
         method: 'GET'
     })
 
-    return res
+    const data: User = res?.data.data
+
+    return data
 }

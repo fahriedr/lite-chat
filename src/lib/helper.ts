@@ -1,3 +1,4 @@
+import { CustomResponse } from '@/types'
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
@@ -7,12 +8,6 @@ interface FetchProps {
     url: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     data?: object
-}
-
-export interface CustomResponse {
-    message: string,
-    success: boolean,
-    data?: any
 }
 
 export const hashPassword = async (password: string) => {
@@ -85,6 +80,14 @@ export const checkAuth = async () => {
     if(!checkToken) {
         return false
     }
+
+    return true
+}
+
+export const logout = async () => {
+    Cookies.remove('token')
+
+    console.log('uhuy')
 
     return true
 }
