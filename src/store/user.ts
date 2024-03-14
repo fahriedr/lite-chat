@@ -3,11 +3,11 @@ import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 interface UserState {
-    user: User,
+    user: User | null,
     userAction: (props: User) => void
 }
 
-const emptyObject = {
+const initialState: User = {
     username: '',
     fullname: '',
     email: '',
@@ -15,6 +15,6 @@ const emptyObject = {
 }
 
 export const useUserStore = create<UserState>()((set) => ({
-    user: emptyObject,
+    user: null,
     userAction: (props: User) => set((state) => ({ user: props })),
 }))

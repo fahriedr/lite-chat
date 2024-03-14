@@ -11,7 +11,16 @@ const nextConfig = {
           topLevelAwait: true,
         }
         return config
-      }
+      },
+      images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "robohash.org",
+            },
+        ],
+        minimumCacheTTL: 15000000,
+    },
 };
 
 export default nextConfig;

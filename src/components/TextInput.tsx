@@ -3,7 +3,7 @@ import React, { ForwardRefRenderFunction, InputHTMLAttributes } from 'react'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
-  label: string;
+  label?: string;
   ref?: string;
 }
 

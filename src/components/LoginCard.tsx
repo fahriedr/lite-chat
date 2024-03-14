@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import Container from "./Container";
 import TextInput from "./TextInput";
-import loginImage from "../../../public/images/login.png";
+import loginImage from "../../public/images/login.png";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie'
@@ -25,6 +25,8 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
   const onLogin = async () => {
 
+    console.log('first')
+
     setLoading(true)
 
     const res = await loginApi({
@@ -42,10 +44,11 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
     }
 
     Cookies.set('token', res?.data.token)
+    Cookies.set('user', JSON.stringify(res?.data.data))
 
     setLoading(false)
 
-    router.push('/profile')
+    // router.push('/profile')
 
   }
 
@@ -72,7 +75,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
           </form>
 
           <Container>
-            Doesn't Have Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Register</span>
+            Doesnt Have Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Register</span>
           </Container>
         </div>
       </div>

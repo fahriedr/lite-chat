@@ -30,8 +30,10 @@ export const fetchApi = async (props: FetchProps) => {
         let headers = {
             'Content-Type': 'application/json',
         }
+
+        const checkToken = await checkAuth()
     
-        if (await checkAuth()) {
+        if (checkToken) {
             const token = Cookies.get('token')
             headers['Authorization'] = 'Bearer ' + token
         }

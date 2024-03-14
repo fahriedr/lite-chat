@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Button from "./Button";
 import Container from "./Container";
 import TextInput from "./TextInput";
-import loginImage from "../../../public/images/login.png";
+import loginImage from "../../public/images/login.png";
 import { registerApi } from "@/utils/api/authApi";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 interface Props {
   updateSession: () => void
@@ -18,6 +20,8 @@ const RegisterCard = ({ updateSession = () => {}}: Props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const onRegister = async () => {
 
@@ -31,7 +35,11 @@ const RegisterCard = ({ updateSession = () => {}}: Props) => {
       } 
     })
 
-    console.log(res, 'here')
+    Cookies.set('token', res?.data.token)
+
+    setLoading(false)
+
+    router.push('/profile')
 
   }
   return (

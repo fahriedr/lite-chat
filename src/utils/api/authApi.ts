@@ -33,7 +33,7 @@ export const loginApi = async (props: LoginProps) => {
 
 export const registerApi = async (props: RegisterProps) => {
 
-    const res = await axios({
+    const res = await fetchApi({
         url: '/api/register',
         method: 'POST',
         data: props.data
