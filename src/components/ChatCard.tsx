@@ -1,14 +1,13 @@
 'use client';
 import React from 'react'
+import ChatPanel from './ChatPanel';
 import SidePanel from './SidePanel';
 
 const ChatCard = () => {
   return (
-    <div className='flex flex-row bg-[#202C33] w-full h-full'>
+    <div className='flex flex-row bg-[#111B21] w-full h-full'>
       <SidePanel/>
-      <div className='flex w-2/3'>
-        Main bar
-      </div>
+      <ChatPanel/>
     </div>
   )
 }
