@@ -5,7 +5,7 @@ import SidePanel from './SidePanel';
 
 const ChatCard = () => {
   return (
-    <div className='flex flex-row bg-[#111B21] w-full h-full'>
+    <div className='flex bg-[#111B21] w-full h-full'>
       <SidePanel/>
       <ChatPanel/>
     </div>
