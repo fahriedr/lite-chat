@@ -16,5 +16,9 @@ export const middleware = async (req: NextRequest) => {
 }
 
 export const config = {
-    matcher: ['/api/profile']
+    matcher: [
+        '/api/profile', 
+        '/api/message/:path*',
+        '/api/contacts/:path*'
+    ]
 }

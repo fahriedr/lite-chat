@@ -93,3 +93,11 @@ export const logout = async () => {
 
     return true
 }
+
+
+export const getPlainId = async (id: Object) => {
+
+    return id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+
+
+}
