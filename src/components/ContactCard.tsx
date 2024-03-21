@@ -15,8 +15,8 @@ const ContactCard = ({ name, lastText, time, onPress }: Props) => {
         <div>
           <Image
             className="border-solid border rounded-full stroke-black"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             src={"https://robohash.org/borju"}
             alt=""
           />
