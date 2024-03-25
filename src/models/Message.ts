@@ -13,7 +13,7 @@ const MessageSchema = new Schema({
         ref: "User" 
     },
     message: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.String,
         required: true,
     }
 

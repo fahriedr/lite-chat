@@ -1,4 +1,5 @@
 import { connectToDatabase } from "@/lib/database";
+import Conversation from "@/models/Conversation";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,11 +10,13 @@ export const GET = async (req: NextRequest) => {
 
         const _id = req.cookies.get('user_id')?.value
         
-        const user = await User.findById(_id).exec()
+        const conversation = await Conversation.find({
+            participants: { $in: [_id]},
+        }).populate('participants')
 
         return NextResponse.json({
             success: true,
-            // data: user
+            data: conversation
         })
         
     } catch (error) {
