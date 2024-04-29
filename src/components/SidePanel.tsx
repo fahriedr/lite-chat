@@ -1,38 +1,72 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import VerticalDots from "./Icons/VerticalDots";
 import FormInput from "./TextInput";
 import LogoutIcon from "./Icons/LogoutIcon";
 import ContactCard from "./ContactCard";
+import { conversationsApi, messagesApi } from "@/utils/api/messagesApi";
+import { Message } from "@/types";
+import { useMessageStore } from "@/store/messages";
+import { useConversationStore } from "@/store/conversation";
+
+interface Participant {
+  _id: String,
+  avatar: String,
+  createdAt: String,
+  email: String,
+  fullname: String,
+  updatedAt: String,
+  username: String
+}
+
+
+interface Conversation {
+  _id: String,
+  createdAt: String,
+  updatedAt: String,
+  participants: Array<Participant>,
+  messages: Array<Message>,
+
+}
 
 const SidePanel = () => {
 
-  const data = [{
-    id: 1,
-    name: 'Sarah'
-  },
-  {
-    id: 3,
-    name: 'Foden'
-  },
-  {
-    id: 4,
-    name: 'Messi'
-  },
-  {
-    id: 5,
-    name: 'Peter'
-  },
-  {
-    id: 6,
-    name: 'Rina'
-  },
-  {
-    id: 7,
-    name: 'Michele'
-  }];
 
-  const getIndex = () => {};
+  const [conversations, setConversations] = useState<Array<Conversation>>([]);
+  const [message, setMessage] = useState<Array<Message>>([]);
+
+  const {messages, messageAction} = useMessageStore((state) => state)
+
+  const {conversation, conversationAction} = useConversationStore((state) => state)
+
+
+  const getConversations = async () => {
+
+    const res = await conversationsApi()
+
+    setConversations(res?.data.data)
+
+  }
+
+  const panelOnClick = async (data: any) => {
+
+    const dataConversation = {
+      _id: data._id,
+      name: data.participants[0].fullname,
+      friendId: data.participants[0]._id,
+      friendAvatar: data.participants[0].avatar
+    }
+
+    conversationAction(dataConversation)
+
+    const res = await messagesApi(data.participants[0]._id)
+
+    messageAction(res?.data.data)
+  }
+
+  useEffect(() => {
+    getConversations()
+  }, []);
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
@@ -55,49 +89,6 @@ const SidePanel = () => {
           >
             <VerticalDots/>
           </button>
-          {/* <!-- Dropdown menu --> */}
-          <div
-            id="dropdownDots"
-            className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-          >
-            <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownMenuIconButton"
-            >
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Earnings
-                </a>
-              </li>
-            </ul>
-            <div className="py-2">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-              >
-                Separated link
-              </a>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -109,11 +100,16 @@ const SidePanel = () => {
       {/* Contact */}
       <div className="flex flex-col overflow-auto">
         <div className="flex flex-col h-[45rem]">
-          {data.map((data, i) => {
+          {conversations.map((data, i) => {
             return (
-              <>
-                <ContactCard key={i} name={data.name} />
-              </>
+              <ContactCard 
+                key={i}
+                name={data.participants[0].fullname} 
+                lastText={data.messages[0].message}
+                time={data.messages[0].createdAt}
+                onPress={() => panelOnClick(data)}
+                avatar={data.participants[0].avatar}
+              />
             );
           })}
         </div>

@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/database";
 import Conversation from "@/models/Conversation";
+import Message from "@/models/Message";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,8 +13,16 @@ export const GET = async (req: NextRequest) => {
         
         const conversation = await Conversation.find({
             participants: { $in: [_id]},
-        }).populate('participants')
-        .populate('messages')
+        },
+        {"messages": {$slice: -1}})
+        .populate({
+            path: 'participants',
+            match: {_id: { $ne: _id}}
+        })
+        .populate({
+            path: 'messages',
+            model: Message
+        })
 
         return NextResponse.json({
             success: true,

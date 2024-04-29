@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie'
 import { redirect, useRouter } from "next/navigation";
 import Head from "next/head";
+import { useUserStore } from "@/store/user";
 
 interface Props {
   updateSession: () => void
@@ -20,12 +21,11 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const {user, userAction} = useUserStore((state) => state)
 
   const router = useRouter()
 
   const onLogin = async () => {
-
-    console.log('first')
 
     setLoading(true)
 
@@ -45,6 +45,8 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
     Cookies.set('token', res?.data.token)
     Cookies.set('user', JSON.stringify(res?.data.data))
+
+    userAction(res?.data.data)
 
     setLoading(false)
 

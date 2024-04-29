@@ -14,11 +14,18 @@ export default function Home() {
   const [card, setCard] = useState('login')
   const {user, userAction} = useUserStore((state) => state)
 
+  const setUser = async () => {
+    const userData = Cookies.get('user')
+
+    if(userData) {
+      userAction(JSON.parse(userData))
+    }
+  }
+
 
   useEffect(() => {
-    Cookies.get('user')
+    setUser()
   }, [])
-  
 
   return (
     <>
@@ -30,7 +37,7 @@ export default function Home() {
       </Head>
       <main>
         <div className={`flex justify-center items-center m-auto h-screen w-screen px-10 py-10`}>
-          {/* {
+          {
             user ? 
             <>
               <ChatCard/>
@@ -42,8 +49,8 @@ export default function Home() {
                 : <RegisterCard updateSession={() => {setCard('login')}}/>
               }
             </> 
-          } */}
-          <ChatCard/>
+          }
+          {/* <ChatCard/> */}
         </div>
       </main>
       <Toaster />

@@ -1,5 +1,4 @@
 import { fetchApi } from "@/lib/helper"
-import axios, { AxiosError } from "axios"
 
 interface LoginProps {
     data: {

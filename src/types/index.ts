@@ -14,3 +14,11 @@ export interface CustomResponse {
     success: boolean,
     data?: any
 }
+
+export interface Message {
+    _id: string,
+    senderId: string,
+    receiverId: string,
+    message: string,
+    createdAt: string
+}

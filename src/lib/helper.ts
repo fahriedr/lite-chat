@@ -66,6 +66,15 @@ export const fetchApi = async (props: FetchProps) => {
                 message: error.response?.data.message,
                 success: false
             }
+
+            if(error.response?.request.status === 401) {
+                Cookies.remove('user')
+                Cookies.remove('token')
+
+                return response
+
+            }
+
             return response
         } else if (error instanceof Error) {
             console.log(error)
