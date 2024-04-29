@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import moment from "moment";
 import React from "react";
 
 const ChatBubble = (data: any) => {
@@ -7,21 +8,23 @@ const ChatBubble = (data: any) => {
   return (
     <>
       {data.data.senderId === id ?
-      <div className="flex justify-end">
-        <div className="w-fit h-fit bg-[#202D34] ml-[2px] py-2 px-4 my-[2px] rounded-tl-lg rounded-bl-lg rounded-br-lg max-w-[60%]">
-          <p>
-            {data.data.message}
-          </p>
+        <div className="flex justify-end">
+          <div className="flex flex-col w-fit h-fit bg-[#075E54] ml-[2px] py-2 px-4 my-[2px] rounded-tl-lg rounded-bl-lg rounded-br-lg max-w-[60%]">
+            <p>
+              {data.data.message}
+            </p>
+            <p className="text-xs/[3px] mt-2 self-end text-[#8696A0]">{moment(data.data.createdAt).format('HH:mm')}</p>
+          </div>
         </div>
-      </div>
-      :
-      <div className="flex">
-        <div className="w-fit h-fit bg-[#202D34] ml-[2px] py-2 px-4 my-[2px] rounded-tr-lg rounded-br-lg rounded-bl-lg max-w-[60%]">
-          <p>
-            {data.data.message}
-          </p>
+        :
+        <div className="flex">
+          <div className="flex flex-col w-fit h-fit bg-[#202D34] ml-[2px] py-2 px-4 my-[2px] rounded-tr-lg rounded-br-lg rounded-bl-lg max-w-[60%]">
+            <p>
+              {data.data.message}
+            </p>
+            <p className="text-xs/[3px] mt-2 self-end text-[#8696A0]">{moment(data.data.createdAt).format('HH:mm')}</p>
+          </div>
         </div>
-      </div>
       }
     </>
   );

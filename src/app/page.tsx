@@ -8,18 +8,25 @@ import {Toaster} from 'react-hot-toast';
 import { useUserStore } from "@/store/user";
 import Cookies from "js-cookie";
 import ChatCard from "@/components/ChatCard";
+import Loading from "@/components/Loading";
 
 export default function Home() {
 
   const [card, setCard] = useState('login')
   const {user, userAction} = useUserStore((state) => state)
 
+  const [loading, setLoading] = useState(false);
+
   const setUser = async () => {
+
+    setLoading(true)
     const userData = Cookies.get('user')
 
     if(userData) {
       userAction(JSON.parse(userData))
+      setLoading(false)
     }
+    setLoading(false)
   }
 
 
@@ -37,20 +44,27 @@ export default function Home() {
       </Head>
       <main>
         <div className={`flex justify-center items-center m-auto h-screen w-screen px-10 py-10`}>
-          {
-            user ? 
-            <>
-              <ChatCard/>
-            </> 
-            : 
+          { 
+            loading
+            ?
+              <Loading/>
+            :
             <>
               {
-                card == 'login' ? <LoginCard updateSession={() => {setCard('register')}}/> 
-                : <RegisterCard updateSession={() => {setCard('login')}}/>
+                user ? 
+                <>
+                  <ChatCard/>
+                </> 
+                : 
+                <>
+                  {
+                    card == 'login' ? <LoginCard updateSession={() => {setCard('register')}}/> 
+                    : <RegisterCard updateSession={() => {setCard('login')}}/>
+                  }
+                </> 
               }
-            </> 
+            </>
           }
-          {/* <ChatCard/> */}
         </div>
       </main>
       <Toaster />

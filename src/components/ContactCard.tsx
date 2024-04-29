@@ -1,3 +1,5 @@
+import { lastMessageTime } from "@/lib/helper";
+import moment from "moment";
 import Image from "next/image";
 import React from "react";
 
@@ -10,6 +12,20 @@ interface Props {
 }
 
 const ContactCard = ({ name, lastText, time, avatar, onPress }: Props) => {
+
+  
+  const lastMessageTime = (date: any) => {
+    const paramDate = moment(date).format('DD/MM/YY')
+
+    const now = moment().format('DD/MM/YY')
+
+    if(now === paramDate) {
+        return moment(date).format('HH:mm')
+    } else {
+        return moment(date).format('DD/MM/YY') 
+    }
+  }
+
   return (
     <>
       <div className="px-3 flex items-center bg-grey-light cursor-pointer hover:bg-[#202C33]" onClick={onPress}>
@@ -25,7 +41,7 @@ const ContactCard = ({ name, lastText, time, avatar, onPress }: Props) => {
         <div className="ml-4 flex-1 border-b border-grey-lighter py-4">
           <div className="flex items-bottom justify-between">
             <p className="text-grey-darkest">{name}</p>
-            <p className="text-xs text-grey-darkest">{time}</p>
+            <p className="text-xs text-grey-darkest">{lastMessageTime(time)}</p>
           </div>
           <p className="text-gray-500 mt-1 text-sm">
             {lastText}

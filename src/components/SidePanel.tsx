@@ -4,7 +4,7 @@ import VerticalDots from "./Icons/VerticalDots";
 import FormInput from "./TextInput";
 import LogoutIcon from "./Icons/LogoutIcon";
 import ContactCard from "./ContactCard";
-import { conversationsApi, messagesApi } from "@/utils/api/messagesApi";
+import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
 import { useMessageStore } from "@/store/messages";
 import { useConversationStore } from "@/store/conversation";
@@ -42,7 +42,7 @@ const SidePanel = () => {
 
   const getConversations = async () => {
 
-    const res = await conversationsApi()
+    const res = await getConversationsApi()
 
     setConversations(res?.data.data)
 
@@ -59,7 +59,7 @@ const SidePanel = () => {
 
     conversationAction(dataConversation)
 
-    const res = await messagesApi(data.participants[0]._id)
+    const res = await getMessagesApi(data.participants[0]._id)
 
     messageAction(res?.data.data)
   }
@@ -73,7 +73,7 @@ const SidePanel = () => {
 
       {/* Header */}
       <div className="flex flex-row w-full justify-between py-3 px-2 items-center bg-[#202C33]">
-        <Image
+        {/* <Image
           className="border-solid border rounded-full stroke-black"
           width={40}
           height={40}
@@ -89,7 +89,8 @@ const SidePanel = () => {
           >
             <VerticalDots/>
           </button>
-        </div>
+        </div> */}
+        <span className="font-bold text-2xl">Chats</span>
       </div>
 
       {/* Search */}
@@ -105,7 +106,7 @@ const SidePanel = () => {
               <ContactCard 
                 key={i}
                 name={data.participants[0].fullname} 
-                lastText={data.messages[0].message}
+                lastText={data.messages[0].message.substring(0, 45) + ' ...'}
                 time={data.messages[0].createdAt}
                 onPress={() => panelOnClick(data)}
                 avatar={data.participants[0].avatar}

@@ -14,9 +14,9 @@ const ButtonCustom: ForwardRefRenderFunction<HTMLButtonElement, ButtonProps> = (
             loading ? 
             <div className="border-gray-300 h-6 w-6 animate-spin rounded-full border-4 border-t-blue-600" />
             :
-            <>
+            <p>
               {text}
-            </>
+            </p>
           }          
         </button>
     </div>
