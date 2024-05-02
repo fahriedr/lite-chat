@@ -1,15 +1,24 @@
 import { Message } from '@/types'
-import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 interface MessagesState {
-    messages: Array<Message> | Array<[]>,
-    messageAction: (props: Array<Message>) => void
+    messages: Array<[]>,
+    setMessage: (props: Array<[]>) => void,
+    addMessage: (props: Message) => void
 }
 
-const initialState = []
+const initialState: Array<[]> = []
 
-export const useMessageStore = create<MessagesState>()((set) => ({
-    messages: [],
-    messageAction: (props: Array<Message>) => set((state) => ({ messages: props })),
+export const useMessageStore = create<MessagesState>((set) => ({
+    messages: initialState,
+    setMessage: (props: Array<[]>) => {
+        set((state) => ({ 
+            messages: props
+        }))
+    },
+    addMessage: (props: any) => {
+        set((state) => ({
+            messages: [...state.messages, props]
+        }))
+    }
 }))

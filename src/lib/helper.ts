@@ -99,8 +99,6 @@ export const checkAuth = async () => {
 export const logout = async () => {
     Cookies.remove('token')
 
-    console.log('uhuy')
-
     return true
 }
 

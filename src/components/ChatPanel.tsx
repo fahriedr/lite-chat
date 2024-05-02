@@ -1,18 +1,25 @@
 import { useConversationStore } from "@/store/conversation";
 import { useMessageStore } from "@/store/messages";
+import { Message } from "@/types";
 import { sendMessageApi } from "@/utils/api/messagesApi";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import ChatInput from "./ChatInput";
 import VerticalDots from "./Icons/VerticalDots";
 
 const ChatPanel = () => {
 
-  const {messages} = useMessageStore((state) => state)
+  const {messages, setMessage, addMessage} = useMessageStore((state) => state)
   const {conversation} = useConversationStore((state) => state )
 
-  const [message, setMessage] = useState('');
+  const [message, setMessageValue] = useState('');
+
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   const sendMessage = async (event: any) => {
     if (event.key === 'Enter') {
@@ -24,22 +31,30 @@ const ChatPanel = () => {
         }
       })
 
-      setMessage('')
+      setMessageValue('')
+
+      const _id = res?.data.data._id as string
+      const newMessage = res?.data.data.message as string
+      const receiverId = res?.data.data.receiverId as string
+      const senderId = res?.data.data.senderId as string
+      const createdAt = res?.data.data.createdAt as string
+
+      const data: Message = {
+        _id: _id,
+        message: newMessage,
+        receiverId: receiverId,
+        senderId: senderId,
+        createdAt: createdAt
+      }
 
       console.log(res?.data, 'res');
-      messages.push({
-        _id: res?.data.data._id,
-        message: res?.data.data.message,
-        receiverId: res?.data.data.receiverId,
-        senderId: res?.data.data.senderId,
-        createdAt: res?.data.data.createdAt
-      })
+      addMessage(data)
     }
   }
 
 
   useEffect(() => {
-    
+    scrollToBottom()
   }, [messages]);
 
   return (
@@ -62,7 +77,7 @@ const ChatPanel = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex flex-col flex-1 justify-end overflow-auto bg-[url('/images/wa-bg.svg')] px-[4px]">
+      <div className="flex flex-col flex-1 overflow-auto bg-[url('/images/wa-bg.svg')] px-[4px]">
         {
           messages.length > 0 ? 
           <>
@@ -76,10 +91,11 @@ const ChatPanel = () => {
           </>
           : <></>
         }
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <ChatInput onChange={(e) => setMessage(e.target.value)} onKeyDown={sendMessage} value={message}/>
+      <ChatInput onChange={(e: any) => setMessageValue(e.target.value)} onKeyDown={sendMessage} value={message}/>
     </div>
   );
 };

@@ -8,6 +8,9 @@ import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
 import { useMessageStore } from "@/store/messages";
 import { useConversationStore } from "@/store/conversation";
+import { logout } from "@/lib/helper";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user";
 
 interface Participant {
   _id: String,
@@ -31,11 +34,13 @@ interface Conversation {
 
 const SidePanel = () => {
 
+  const router = useRouter()
 
+  const {resetUser} = useUserStore()
   const [conversations, setConversations] = useState<Array<Conversation>>([]);
-  const [message, setMessage] = useState<Array<Message>>([]);
+  const [message, setMessageValue] = useState<Array<Message>>([]);
 
-  const {messages, messageAction} = useMessageStore((state) => state)
+  const {messages, setMessage} = useMessageStore((state) => state)
 
   const {conversation, conversationAction} = useConversationStore((state) => state)
 
@@ -61,7 +66,15 @@ const SidePanel = () => {
 
     const res = await getMessagesApi(data.participants[0]._id)
 
-    messageAction(res?.data.data)
+    setMessage(res?.data.data)
+  }
+
+  const logoutClick = async () => {
+    const res = await logout()
+    if(res) {
+      resetUser()
+      router.refresh()
+    }
   }
 
   useEffect(() => {
@@ -73,24 +86,8 @@ const SidePanel = () => {
 
       {/* Header */}
       <div className="flex flex-row w-full justify-between py-3 px-2 items-center bg-[#202C33]">
-        {/* <Image
-          className="border-solid border rounded-full stroke-black"
-          width={40}
-          height={40}
-          src={"https://robohash.org/borju"}
-          alt=""
-        />
-        <div className="cursor-pointer">
-          <button
-            id="dropdownMenuIconButton"
-            data-dropdown-toggle="dropdownDots"
-            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-[#202C33] dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            type="button"
-          >
-            <VerticalDots/>
-          </button>
-        </div> */}
         <span className="font-bold text-2xl">Chats</span>
+        <button onClick={logoutClick} className="bg-[#111B21] p-2 text-xs font-semibold rounded-md">Logout</button>
       </div>
 
       {/* Search */}
@@ -109,7 +106,7 @@ const SidePanel = () => {
                 lastText={data.messages[0].message.substring(0, 45) + ' ...'}
                 time={data.messages[0].createdAt}
                 onPress={() => panelOnClick(data)}
-                avatar={data.participants[0].avatar}
+                avatar={data.participants[0].avatar as string}
               />
             );
           })}

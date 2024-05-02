@@ -1,4 +1,3 @@
-import { lastMessageTime } from "@/lib/helper";
 import moment from "moment";
 import Image from "next/image";
 import React from "react";
@@ -7,11 +6,11 @@ interface Props {
   name?: String;
   lastText?: String;
   time?: String;
-  avatar?: String;
+  avatar?: string;
   onPress?: (conversation: any) => void;
 }
 
-const ContactCard = ({ name, lastText, time, avatar, onPress }: Props) => {
+const ContactCard = ({ name, lastText, time, avatar = 'https://robohash/random', onPress }: Props) => {
 
   
   const lastMessageTime = (date: any) => {

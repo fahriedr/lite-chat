@@ -17,7 +17,7 @@ const Profile = () => {
   const {user, userAction} = useUserStore((state) => state)
 
   const imageLoader = () => {
-    return user.avatar
+    return user?.avatar as any
   }
 
   const getProfile = async () => {
@@ -56,9 +56,9 @@ const Profile = () => {
       <div className='flex flex-col items-center w-[100%] h-[70%] bg-blue-500'>
         {pageLoading ? <><div className="border-gray-300 h-6 w-6 animate-spin rounded-full border-4 border-t-blue-600" /></> : <><span>Profile Page</span>
         <Image loader={imageLoader} src='me.png' alt="profile image" width={100} height={100}/>
-        <span>{user.fullname}</span>
-        <span>{user.username}</span>
-        <span>{user.email}</span>
+        <span>{user?.fullname}</span>
+        <span>{user?.username}</span>
+        <span>{user?.email}</span>
         <Button text='Logout' onClick={logout} loading={loading}/></>}
 
         

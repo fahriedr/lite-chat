@@ -4,7 +4,8 @@ import { create } from 'zustand'
 
 interface UserState {
     user: User | null,
-    userAction: (props: User) => void
+    userAction: (props: User) => void,
+    resetUser: () => void
 }
 
 const initialState: User = {
@@ -17,4 +18,5 @@ const initialState: User = {
 export const useUserStore = create<UserState>()((set) => ({
     user: null,
     userAction: (props: User) => set((state) => ({ user: props })),
+    resetUser: () => set((state) => ({user: null}))
 }))
