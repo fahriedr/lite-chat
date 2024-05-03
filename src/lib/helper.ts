@@ -1,3 +1,4 @@
+// 'use server'
 import { CustomResponse } from '@/types'
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'

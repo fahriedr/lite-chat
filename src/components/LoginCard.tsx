@@ -29,6 +29,13 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
     setLoading(true)
 
+    if(username.length < 1 || password.length < 1) {
+      toast.error('Username and Password cannot be empty')
+      setLoading(false)
+      return
+    }
+
+
     const res = await loginApi({
       data: {
         username: username,
@@ -37,7 +44,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
     })
 
     if(res?.success === false){
-      toast.error(res.message)
+      toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
 
       return
@@ -47,10 +54,6 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
     Cookies.set('user', JSON.stringify(res?.data.data))
 
     userAction(res?.data.data)
-
-    setLoading(false)
-
-    // router.push('/profile')
 
   }
 
@@ -72,7 +75,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
               <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
             </Container>
             <Container>
-              <Button text="Login" onClick={onLogin} loading={loading}/>
+              <Button text="Login" onClick={() => onLogin} loading={loading}/>
             </Container>
           </form>
 
