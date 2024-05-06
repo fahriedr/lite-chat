@@ -7,8 +7,16 @@ import React, { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import ChatInput from "./ChatInput";
 import VerticalDots from "./Icons/VerticalDots";
+import io from 'socket.io-client'
 
 const ChatPanel = () => {
+
+  const socket = io('http://localhost:3002', {
+    withCredentials: true,
+    extraHeaders: {
+      "my-custom-header": "abcd"
+    }
+  })
 
   const {messages, setMessage, addMessage} = useMessageStore((state) => state)
   const {conversation} = useConversationStore((state) => state )
@@ -46,9 +54,8 @@ const ChatPanel = () => {
         senderId: senderId,
         createdAt: createdAt
       }
-
-      console.log(res?.data, 'res');
       addMessage(data)
+      socket.emit('message', data)
     }
   }
 
