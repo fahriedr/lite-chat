@@ -49,6 +49,9 @@ const SidePanel = () => {
 
     const res = await getConversationsApi()
 
+    if(res?.success === false) {
+      router.push('/')
+    }
     setConversations(res?.data.data)
 
   }
@@ -85,7 +88,7 @@ const SidePanel = () => {
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
 
       {/* Header */}
-      <div className="flex flex-row w-full justify-between py-3 px-2 items-center bg-[#202C33]">
+      <div className="flex flex-row w-full justify-between py-4 px-2 items-center bg-[#202C33]">
         <span className="font-bold text-2xl">Chats</span>
         <button onClick={logoutClick} className="bg-[#111B21] p-2 text-xs font-semibold rounded-md">Logout</button>
       </div>

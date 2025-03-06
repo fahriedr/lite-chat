@@ -11,14 +11,11 @@ import ChatCard from "@/components/ChatCard";
 import Loading from "@/components/Loading";
 
 export default function Home() {
-
   const [card, setCard] = useState('login')
   const {user, userAction} = useUserStore((state) => state)
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const setUser = async () => {
-
     setLoading(true)
     const userData = Cookies.get('user')
 
@@ -28,7 +25,6 @@ export default function Home() {
     }
     setLoading(false)
   }
-
 
   useEffect(() => {
     setUser()
@@ -42,26 +38,28 @@ export default function Home() {
           Lite Chat | Auth
         </title>
       </Head>
-      <main>
-        <div className={`flex justify-center items-center m-auto h-screen w-screen px-10 py-10`}>
+      <main className="fixed-layout">
+        <div className="app-container">
           { 
             loading
             ?
-              <Loading/>
+              <div className="loading-container">
+                <Loading/>
+              </div>
             :
             <>
               {
                 user ? 
-                <>
+                <div className="chat-container">
                   <ChatCard/>
-                </> 
+                </div>
                 : 
-                <>
+                <div className="auth-container">
                   {
                     card == 'login' ? <LoginCard updateSession={() => {setCard('register')}}/> 
                     : <RegisterCard updateSession={() => {setCard('login')}}/>
                   }
-                </> 
+                </div>
               }
             </>
           }

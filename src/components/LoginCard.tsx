@@ -18,9 +18,9 @@ interface Props {
 
 const LoginCard = ({ updateSession = () => {}}: Props) => {
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const {user, userAction} = useUserStore((state) => state)
 
   const router = useRouter()
@@ -75,7 +75,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
               <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
             </Container>
             <Container>
-              <Button text="Login" onClick={() => onLogin} loading={loading}/>
+              <Button text="Login" onClick={onLogin} loading={loading} disabled/>
             </Container>
           </form>
 

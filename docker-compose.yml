@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  nextjs:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - socketio
+
+  socketio:
+    build:
+      context: .
+      dockerfile: Dockerfile.socketio
+    volumes:
+      - ./server.js:/app/server.js
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002

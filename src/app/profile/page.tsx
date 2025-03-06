@@ -40,6 +40,7 @@ const Profile = () => {
   const logout = async () => {
     setLoading(true)
     Cookies.remove('token')
+    Cookies.remove('user')
 
     setLoading(false)
 

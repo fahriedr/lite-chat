@@ -8,23 +8,15 @@ import ChatBubble from "./ChatBubble";
 import ChatInput from "./ChatInput";
 import VerticalDots from "./Icons/VerticalDots";
 import io from "socket.io-client";
-import Pusher from "pusher-js";
 
 const ChatPanel = () => {
-  Pusher.logToConsole = true;
 
-  const pusher = new Pusher("993f5fb44f2246f24dd7", {
-    cluster: "ap1",
-  });
-
-  const channel = pusher.subscribe("my-channel");
-
-  // const socket = io('http://localhost:3002', {
-  //   withCredentials: true,
-  //   extraHeaders: {
-  //     "my-custom-header": "abcd"
-  //   }
-  // })
+  const socket = io('http://localhost:3002', {
+    withCredentials: true,
+    extraHeaders: {
+      "my-custom-header": "abcd"
+    }
+  })
 
   const { messages, setMessage, addMessage } = useMessageStore(
     (state) => state
@@ -64,16 +56,11 @@ const ChatPanel = () => {
         createdAt: createdAt,
       };
       addMessage(data);
-      // socket.emit('message', data)
+      socket.emit('message', data)
     }
   };
 
-  useEffect(() => {
-    channel.bind("my-event", function (data: any) {
-      alert(JSON.stringify(data));
-      console.debug(data, 'data');
-    });
-  },[])
+  console.log(conversation, 'conver')
 
   useEffect(() => {
     scrollToBottom();
@@ -101,7 +88,7 @@ const ChatPanel = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex flex-col flex-1 overflow-auto bg-[url('/images/wa-bg.svg')] px-[4px]">
+      <div className="flex flex-col flex-1 overflow-auto bg-[url('/images/wa-bg.svg')] px-8">
         {messages.length > 0 ? (
           <>
             {messages.map((data, i) => {
