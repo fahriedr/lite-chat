@@ -60,8 +60,6 @@ const ChatPanel = () => {
     }
   };
 
-  console.log(conversation, 'conver')
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);

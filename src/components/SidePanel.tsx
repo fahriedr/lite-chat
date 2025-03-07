@@ -13,20 +13,20 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 
 interface Participant {
-  _id: String,
-  avatar: String,
-  createdAt: String,
-  email: String,
-  fullname: String,
-  updatedAt: String,
-  username: String
+  _id: string,
+  avatar: string,
+  createdAt: string,
+  email: string,
+  fullname: string,
+  updatedAt: string,
+  username: string
 }
 
 
 interface Conversation {
-  _id: String,
-  createdAt: String,
-  updatedAt: String,
+  _id: string,
+  createdAt: string,
+  updatedAt: string,
   participants: Array<Participant>,
   messages: Array<Message>,
 
@@ -42,7 +42,7 @@ const SidePanel = () => {
 
   const {messages, setMessage} = useMessageStore((state) => state)
 
-  const {conversation, conversationAction} = useConversationStore((state) => state)
+  const {conversation, conversationAction, conversationLoadingAction, loading} = useConversationStore((state) => state)
 
 
   const getConversations = async () => {
@@ -57,6 +57,8 @@ const SidePanel = () => {
   }
 
   const panelOnClick = async (data: any) => {
+
+    conversationLoadingAction
 
     const dataConversation = {
       _id: data._id,
@@ -80,9 +82,19 @@ const SidePanel = () => {
     }
   }
 
+  const lastText = (text: string): string => {
+    if (text.length > 45) {
+      return text.substring(0, 45) + '...'
+    }
+
+    return text
+  }
+
   useEffect(() => {
     getConversations()
   }, []);
+
+  console.log(loading)
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
@@ -106,7 +118,7 @@ const SidePanel = () => {
               <ContactCard 
                 key={i}
                 name={data.participants[0].fullname} 
-                lastText={data.messages[0].message.substring(0, 45) + ' ...'}
+                lastText={lastText(data.messages[0].message)}
                 time={data.messages[0].createdAt}
                 onPress={() => panelOnClick(data)}
                 avatar={data.participants[0].avatar as string}

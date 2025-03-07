@@ -3,9 +3,9 @@ import Image from "next/image";
 import React from "react";
 
 interface Props {
-  name?: String;
-  lastText?: String;
-  time?: String;
+  name?: string;
+  lastText?: string;
+  time?: string;
   avatar?: string;
   onPress?: (conversation: any) => void;
 }

@@ -21,7 +21,7 @@ const RegisterCard = ({ updateSession = () => {}}: Props) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  // const router = useRouter()
 
   const onRegister = async () => {
 
@@ -39,7 +39,7 @@ const RegisterCard = ({ updateSession = () => {}}: Props) => {
 
     setLoading(false)
 
-    router.push('/profile')
+    // router.push('/profile')
 
   }
   return (

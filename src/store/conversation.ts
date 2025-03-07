@@ -9,10 +9,14 @@ interface Conversation {
 
 interface conversationState {
     conversation: Conversation | null,
+    loading: boolean,
     conversationAction: (props: Conversation) => void
+    conversationLoadingAction: () => void
 }
 
 export const useConversationStore = create<conversationState>()((set) => ({
     conversation: null,
-    conversationAction: (props: Conversation) => set((state) => ({ conversation: props })),
+    loading: true,
+    conversationLoadingAction: () => set((state) => ({ loading: true})),
+    conversationAction: (props: Conversation) => set((state) => ({ conversation: props, loading: false })),
 }))
