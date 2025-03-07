@@ -4,9 +4,9 @@ import { Message } from "@/types";
 import { sendMessageApi } from "@/utils/api/messagesApi";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import ChatBubble from "./ChatBubble";
-import ChatInput from "./ChatInput";
-import VerticalDots from "./Icons/VerticalDots";
+import ChatBubble from "@/components/UI/ChatBubble";
+import ChatInput from "@/components/UI/ChatInput";
+import VerticalDots from "../Icons/VerticalDots";
 import io from "socket.io-client";
 
 const ChatPanel = () => {
@@ -65,7 +65,7 @@ const ChatPanel = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-screen">
       {/* Header */}
       <div className="flex flex-row w-full px-4 items-center bg-[#202C33] h-[64px] py-[7px] justify-between">
         <div className="flex flex-row items-center">

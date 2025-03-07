@@ -2,7 +2,7 @@ import { fetchApi } from "@/lib/helper"
 
 interface LoginProps {
     data: {
-        username: string,
+        email: string,
         password: string
     } 
 }

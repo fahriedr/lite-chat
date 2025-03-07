@@ -1,9 +1,9 @@
 'use client';
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Button from "./Button";
-import Container from "./Container";
-import TextInput from "./TextInput";
+import Button from "@/components/UI/Button";
+import Container from "@/components/UI/Container";
+import TextInput from "@/components/UI/TextInput";
 import loginImage from "../../public/images/login.png";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
@@ -14,12 +14,12 @@ import { useUserStore } from "@/store/user";
 import Link from "next/link";
 
 interface Props {
-  updateSession: () => void
+
 }
 
-const LoginCard = ({ updateSession = () => {}}: Props) => {
+const LoginCard = ({}: Props) => {
 
-  const [username, setUsername] = useState<string>('')
+  const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const {user, userAction} = useUserStore((state) => state)
@@ -30,24 +30,24 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
     setLoading(true)
 
-    if(username.length < 1 || password.length < 1) {
-      toast.error('Username and Password cannot be empty')
+    if(email.length < 1 || password.length < 1) {
+      toast.error('Email and Password cannot be empty')
       setLoading(false)
-      return
+      return false
     }
-
 
     const res = await loginApi({
       data: {
-        username: username,
+        email: email,
         password: password
       } 
     })
 
+    console.log(res, 'res')
+
     if(res?.success === false){
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
-
       return
     }
 
@@ -56,36 +56,11 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
 
     userAction(res?.data.data)
 
+    router.push('/home')
+
   }
 
   return (
-    // <div className={`flex flex-row w-[100%] h-[70%] md:w-[70%] md:rounded-full`}>
-    //   <div className={`hidden md:flex w-[60%]`}>
-    //     <Image src={loginImage} alt="Login image" />
-    //   </div>
-    //   <div className="flex flex-col w-[100%] md:w-[40%]">
-    //     <div className={`flex flex-col px-10 py-4 bg-[#202C33] h-full`}>
-    //       <form action={handleSubmit}>
-    //         <Container>
-    //           <span className="font-bold text-2xl text-center">Login</span>
-    //         </Container>
-    //         <Container>
-    //           <TextInput type="text" label={'Username'} name="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-    //         </Container>
-    //         <Container>
-    //           <TextInput type="password" label={'Password'} name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-    //         </Container>
-    //         <Container>
-    //           <Button text="Login" onClick={handleSubmit} loading={loading} disabled/>
-    //         </Container>
-    //       </form>
-
-    //       <Container>
-    //         Doesnt Have Account? <span onClick={updateSession} className="text-blue-500 cursor-pointer"> Register</span>
-    //       </Container>
-    //     </div>
-    //   </div>
-    // </div>
     <div className="flex w-full min-h-screen bg-gray-50">
       {/* Left panel with illustration/brand */}
       <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col items-center justify-center p-12 text-white">
@@ -116,7 +91,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
             </div>
           )} */}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -127,7 +102,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
                 required
                 className="w-full px-4 py-3 rounded-lg border text-black border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="you@example.com"
-                value={username}
+                value={email}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -165,7 +140,8 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
             </div>
 
             <button
-              type="submit"
+              onClick={handleSubmit}
+              type="button"
               disabled={loading}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center"
             >
@@ -177,7 +153,7 @@ const LoginCard = ({ updateSession = () => {}}: Props) => {
               ) : null}
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
-          </form>
+          </div>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">

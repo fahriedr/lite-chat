@@ -99,7 +99,7 @@ export const checkAuth = async () => {
 
 export const logout = async () => {
     Cookies.remove('token')
-
+    Cookies.remove('user')
     return true
 }
 

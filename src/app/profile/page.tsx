@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { redirect, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useUserStore } from '../../store/user';
-import Button from '../../components/Button';
+import Button from '../../components/UI/Button';
 
 const Profile = () => {
 
@@ -27,7 +27,7 @@ const Profile = () => {
     const checkUser = await checkAuth()
 
     if(!checkUser){
-      router.push('/')
+      router.push('/login')
     } else {
       const dataUser: User = await getProfileApi()
 

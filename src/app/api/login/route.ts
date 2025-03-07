@@ -6,7 +6,7 @@ import { z } from "zod";
 import jwt from 'jsonwebtoken'
 
 const schema = z.object({
-  username: z.string().min(6).max(12).trim(),
+  email: z.string().email(),
   password: z.string().min(6).max(30),
 });
 
@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     return NextResponse.json(validate.error.format(), { status: 400 });
   }
 
-  const checkUser = await User.findOne({ username: body.username })
+  const checkUser = await User.findOne({ email: body.email })
     .select("+password")
     .exec();
 

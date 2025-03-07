@@ -1,13 +1,13 @@
 'use client';
 import { useConversationStore } from '@/store/conversation';
 import React, { useEffect, useState } from 'react'
-import ChatPanel from './ChatPanel';
-import EmptyChatPanel from './EmptyChatPanel';
-import SidePanel from './SidePanel';
+import ChatPanel from '@/components/Home/ChatPanel';
+import EmptyChatPanel from '@/components/Home/EmptyChatPanel';
+import SidePanel from '@/components/Home/SidePanel';
 import io from 'socket.io-client'
 import { useMessageStore } from '@/store/messages';
 import Cookies from 'js-cookie';
-import Loading from './Loading';
+import Loading from '@/components/UI/Loading';
 
 const ChatCard = () => {
 
@@ -31,7 +31,7 @@ const ChatCard = () => {
   const renderChatPanel = () => {
     if (!conversation) return <EmptyChatPanel />;
     if (loading) return (
-      <div className='flex flex-col justify-center items-center w-full'>
+      <div className='flex flex-col justify-center items-center w-full h-full'>
         <Loading />
       </div>
     );

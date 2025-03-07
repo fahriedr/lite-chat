@@ -1,9 +1,11 @@
+"use client"
+
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import VerticalDots from "./Icons/VerticalDots";
-import FormInput from "./TextInput";
-import LogoutIcon from "./Icons/LogoutIcon";
-import ContactCard from "./ContactCard";
+import VerticalDots from "@/components/Icons/VerticalDots";
+import FormInput from "@/components/UI/TextInput";
+import LogoutIcon from "@/components/Icons/LogoutIcon";
+import ContactCard from "@/components/Home/ContactCard";
 import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
 import { useMessageStore } from "@/store/messages";
@@ -11,6 +13,7 @@ import { useConversationStore } from "@/store/conversation";
 import { logout } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
+import Loading from "../UI/Loading";
 
 interface Participant {
   _id: string,
@@ -38,22 +41,22 @@ const SidePanel = () => {
 
   const {resetUser} = useUserStore()
   const [conversations, setConversations] = useState<Array<Conversation>>([]);
+  const [conversationsLoading, setConversationsLoading] = useState<boolean>(true)
   const [message, setMessageValue] = useState<Array<Message>>([]);
 
   const {messages, setMessage} = useMessageStore((state) => state)
 
   const {conversation, conversationAction, conversationLoadingAction, loading} = useConversationStore((state) => state)
 
-
   const getConversations = async () => {
 
     const res = await getConversationsApi()
 
     if(res?.success === false) {
-      router.push('/')
+      router.push('/login')
     }
     setConversations(res?.data.data)
-
+    setConversationsLoading(false)
   }
 
   const panelOnClick = async (data: any) => {
@@ -78,7 +81,7 @@ const SidePanel = () => {
     const res = await logout()
     if(res) {
       resetUser()
-      router.refresh()
+      router.push('/login')
     }
   }
 
@@ -94,8 +97,6 @@ const SidePanel = () => {
     getConversations()
   }, []);
 
-  console.log(loading)
-
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
 
@@ -107,24 +108,35 @@ const SidePanel = () => {
 
       {/* Search */}
       <div className="flex flex-col w-full my-1 p-1">
-        <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33]" placeholder="Search or start new chat"/>
+        <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33] outline-none" placeholder="Search or start new chat"/>
       </div>
 
       {/* Contact */}
       <div className="flex flex-col overflow-auto">
         <div className="flex flex-col h-[45rem]">
-          {conversations.map((data, i) => {
-            return (
-              <ContactCard 
-                key={i}
-                name={data.participants[0].fullname} 
-                lastText={lastText(data.messages[0].message)}
-                time={data.messages[0].createdAt}
-                onPress={() => panelOnClick(data)}
-                avatar={data.participants[0].avatar as string}
-              />
-            );
-          })}
+          {
+            conversationsLoading ? 
+            <div className="flex justify-center place-items-center w-full">
+              <Loading/>
+            </div>
+            :
+            <>
+              {
+                conversations.map((data, i) => {
+                  return (
+                    <ContactCard 
+                      key={i}
+                      name={data.participants[0].fullname} 
+                      lastText={lastText(data.messages[0].message)}
+                      time={data.messages[0].createdAt}
+                      onPress={() => panelOnClick(data)}
+                      avatar={data.participants[0].avatar as string}
+                    />
+                  );
+                })
+              }
+            </>
+          }
         </div>
       </div>
     </div>

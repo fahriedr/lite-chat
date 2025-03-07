@@ -1,9 +1,9 @@
 'use client';
 import Image from "next/image";
 import React, { useState } from "react";
-import Button from "./Button";
-import Container from "./Container";
-import TextInput from "./TextInput";
+import Button from "@/components/UI/Button";
+import Container from "@/components/UI/Container";
+import TextInput from "@/components/UI/TextInput";
 import loginImage from "../../public/images/login.png";
 import { registerApi } from "@/utils/api/authApi";
 import Cookies from "js-cookie";

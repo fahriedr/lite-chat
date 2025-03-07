@@ -21,7 +21,7 @@ const ChatInput = ({ ...props}) => {
           </svg>
         </div>
         <div className="flex-1 mx-4">
-          <input className="w-full rounded px-2 py-2 bg-[#2A3942]" type="text" {...props} />
+          <input className="w-full rounded px-2 py-2 bg-[#2A3942] outline-none" type="text" {...props} />
         </div>
         <div>
           <svg

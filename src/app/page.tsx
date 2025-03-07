@@ -14,7 +14,7 @@ import Image from 'next/image';
 // Custom icons as components
 
 
-export default function Home() {
+export default function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -82,7 +82,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <Toaster />
     </>
   );
 }
