@@ -23,41 +23,35 @@ const ChatPanel = () => {
   );
   const { conversation } = useConversationStore((state) => state);
 
-  const [message, setMessageValue] = useState("");
-
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const sendMessage = async (event: any) => {
-    if (event.key === "Enter") {
-      const res = await sendMessageApi({
-        data: {
-          userId: conversation?.friendId!,
-          message: message,
-        },
-      });
+  const onSendMessage = async (message: string) => {
+    const res = await sendMessageApi({
+      data: {
+        userId: conversation?.friendId!,
+        message: message,
+      },
+    });
 
-      setMessageValue("");
+    const _id = res?.data.data._id as string;
+    const newMessage = res?.data.data.message as string;
+    const receiverId = res?.data.data.receiverId as string;
+    const senderId = res?.data.data.senderId as string;
+    const createdAt = res?.data.data.createdAt as string;
 
-      const _id = res?.data.data._id as string;
-      const newMessage = res?.data.data.message as string;
-      const receiverId = res?.data.data.receiverId as string;
-      const senderId = res?.data.data.senderId as string;
-      const createdAt = res?.data.data.createdAt as string;
-
-      const data: Message = {
-        _id: _id,
-        message: newMessage,
-        receiverId: receiverId,
-        senderId: senderId,
-        createdAt: createdAt,
-      };
-      addMessage(data);
-      socket.emit('message', data)
-    }
+    const data: Message = {
+      _id: _id,
+      message: newMessage,
+      receiverId: receiverId,
+      senderId: senderId,
+      createdAt: createdAt,
+    };
+    addMessage(data);
+    socket.emit('message', data)
   };
 
   useEffect(() => {
@@ -101,9 +95,7 @@ const ChatPanel = () => {
 
       {/* Input */}
       <ChatInput
-        onChange={(e: any) => setMessageValue(e.target.value)}
-        onKeyDown={sendMessage}
-        value={message}
+        onSendMessage={onSendMessage}
       />
     </div>
   );

@@ -17,12 +17,12 @@ interface Props {
 
 }
 
-const LoginCard = ({}: Props) => {
+const LoginCard = ({ }: Props) => {
 
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const {user, userAction} = useUserStore((state) => state)
+  const { user, userAction } = useUserStore((state) => state)
 
   const router = useRouter()
 
@@ -30,7 +30,7 @@ const LoginCard = ({}: Props) => {
 
     setLoading(true)
 
-    if(email.length < 1 || password.length < 1) {
+    if (email.length < 1 || password.length < 1) {
       toast.error('Email and Password cannot be empty')
       setLoading(false)
       return false
@@ -40,12 +40,10 @@ const LoginCard = ({}: Props) => {
       data: {
         email: email,
         password: password
-      } 
+      }
     })
 
-    console.log(res, 'res')
-
-    if(res?.success === false){
+    if (res?.success === false) {
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
       return
@@ -68,7 +66,7 @@ const LoginCard = ({}: Props) => {
           {/* <MessageCircle size={64} className="mb-8" /> */}
           <h1 className="text-4xl font-bold mb-6">Connect with friends and teams</h1>
           <p className="text-lg opacity-90">
-            Join thousands of users who trust ChatApp for their daily communication. 
+            Join thousands of users who trust ChatApp for their daily communication.
             Fast, secure, and designed for modern teams.
           </p>
         </div>
@@ -91,7 +89,13 @@ const LoginCard = ({}: Props) => {
             </div>
           )} */}
 
-          <div className="space-y-6">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Prevent default form submission
+              handleSubmit(); // Call your submit function
+            }}
+            className="space-y-6"
+          >
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -140,8 +144,7 @@ const LoginCard = ({}: Props) => {
             </div>
 
             <button
-              onClick={handleSubmit}
-              type="button"
+              type="submit"
               disabled={loading}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center"
             >
@@ -153,7 +156,7 @@ const LoginCard = ({}: Props) => {
               ) : null}
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
-          </div>
+          </form>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">

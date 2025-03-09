@@ -42,7 +42,6 @@ const SidePanel = () => {
   const {resetUser} = useUserStore()
   const [conversations, setConversations] = useState<Array<Conversation>>([]);
   const [conversationsLoading, setConversationsLoading] = useState<boolean>(true)
-  const [message, setMessageValue] = useState<Array<Message>>([]);
 
   const {messages, setMessage} = useMessageStore((state) => state)
 
@@ -95,7 +94,7 @@ const SidePanel = () => {
 
   useEffect(() => {
     getConversations()
-  }, []);
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">

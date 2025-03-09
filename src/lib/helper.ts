@@ -31,6 +31,7 @@ export const fetchApi = async (props: FetchProps) => {
     try {
         let headers = {
             'Content-Type': 'application/json',
+            'Authorization': ''
         }
 
         const checkToken = await checkAuth()

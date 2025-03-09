@@ -10,8 +10,10 @@ const io = new Server(httpServer, {
     origin: ["http://localhost:3000", "http://nextjs:3000"],
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
+    transports: ['websocket', 'polling'],
     credentials: true,
   },
+  allowEIO3: true
 });
 
 io.on('connection', (socket) => {
