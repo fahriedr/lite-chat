@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, context: { params: {receiverId: Stri
         await connectToDatabase();
 
         const receiverId = context.params.receiverId
-        const senderId = req.cookies.get('user_id')?.value
+        const senderId = req.headers.get("x-user-id")
 
         const conversation = await Conversation.findOne({
             participants: {$all: [senderId, receiverId]},

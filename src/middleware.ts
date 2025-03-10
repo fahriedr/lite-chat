@@ -10,7 +10,7 @@ export const middleware = async (req: NextRequest) => {
     }
 
     const response = NextResponse.next()
-    response.cookies.set('user_id', result.payload?._id as string)
+    response.headers.set("x-user-id", result.payload?._id as string);
 
     return response
 }

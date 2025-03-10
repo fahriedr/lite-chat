@@ -61,7 +61,7 @@ const LoginCard = ({ }: Props) => {
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
       {/* Left panel with illustration/brand */}
-      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col items-center justify-center p-12 text-white">
+      <div className="hidden lg:flex lg:w-1/2 bg-main-color flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md">
           {/* <MessageCircle size={64} className="mb-8" /> */}
           <h1 className="text-4xl font-bold mb-6">Connect with friends and teams</h1>

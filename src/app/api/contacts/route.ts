@@ -8,7 +8,7 @@ export const GET = async (req: NextRequest) => {
 
         await connectToDatabase()
 
-        const _id = req.cookies.get('user_id')?.value
+        const _id = req.headers.get("x-user-id")
         
         const conversation = await Conversation.find({
             participants: { $in: [_id]},

@@ -12,6 +12,7 @@ interface conversationState {
     loading: boolean,
     conversationAction: (props: Conversation) => void
     conversationLoadingAction: () => void
+    resetConversation: () => void
 }
 
 export const useConversationStore = create<conversationState>()((set) => ({
@@ -19,4 +20,5 @@ export const useConversationStore = create<conversationState>()((set) => ({
     loading: true,
     conversationLoadingAction: () => set((state) => ({ loading: true})),
     conversationAction: (props: Conversation) => set((state) => ({ conversation: props, loading: false })),
+    resetConversation: () => set((state) => ({conversation: null}))
 }))

@@ -6,27 +6,26 @@ const jwtConfig = {
 }
 
 export const isAuthenticated = async (req: NextRequest) => {
-  let token = req.headers.get('authorization') || req.headers.get('Authorization')
+  let token = req.headers.get("authorization") || req.headers.get("Authorization");
 
   if (token) {
     try {
-      if (token.startsWith('Bearer')) {
-        token = token.replace('Bearer ', '')
+      if (token.startsWith("Bearer ")) {
+        token = token.replace("Bearer ", "")
       }
-
+      console.log(token, 'token')
       const decoded = await jose.jwtVerify(token, jwtConfig.secret)
 
-      if (decoded.payload?._id) {
-        return decoded
+      if (decoded.payload._id) {
+        return decoded;
       } else {
-        return false
+        return false;
       }
     } catch (err) {
-      console.error('isAuthenticated error: ', err)
-
-      return false
+      console.error("isAuthenticated error: ", err);
+      return false;
     }
   } else {
-    return false
+    return false;
   }
-}
+};

@@ -17,7 +17,7 @@ const ChatCard = () => {
   const userId = JSON.parse(user ?? '{}')._id;
 
   useEffect(() => {
-    const socket = io('http://localhost:3002', { withCredentials: true });
+    const socket = io('http://socket.fahriedev.web.id/', { withCredentials: true });
 
     socket.on('message', message => {
       if (message.receiverId === userId) {

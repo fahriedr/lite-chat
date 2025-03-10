@@ -9,7 +9,13 @@ export const GET = async (req: NextRequest) => {
 
         await connectToDatabase()
 
-        const _id = req.cookies.get('user_id')?.value
+        const _id = req.headers.get("x-user-id")
+
+        if (!_id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        console.log(_id, '_id')
         
         const conversation = await Conversation.find({
             participants: { $in: [_id]},

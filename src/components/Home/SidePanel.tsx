@@ -1,10 +1,6 @@
 "use client"
 
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import VerticalDots from "@/components/Icons/VerticalDots";
-import FormInput from "@/components/UI/TextInput";
-import LogoutIcon from "@/components/Icons/LogoutIcon";
 import ContactCard from "@/components/Home/ContactCard";
 import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
@@ -45,7 +41,7 @@ const SidePanel = () => {
 
   const {messages, setMessage} = useMessageStore((state) => state)
 
-  const {conversation, conversationAction, conversationLoadingAction, loading} = useConversationStore((state) => state)
+  const {conversation, conversationAction, conversationLoadingAction, resetConversation} = useConversationStore((state) => state)
 
   const getConversations = async () => {
 
@@ -60,7 +56,7 @@ const SidePanel = () => {
 
   const panelOnClick = async (data: any) => {
 
-    conversationLoadingAction
+    conversationLoadingAction()
 
     const dataConversation = {
       _id: data._id,
@@ -80,6 +76,7 @@ const SidePanel = () => {
     const res = await logout()
     if(res) {
       resetUser()
+      resetConversation()
       router.push('/login')
     }
   }

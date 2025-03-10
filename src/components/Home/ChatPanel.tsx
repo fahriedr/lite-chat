@@ -8,8 +8,16 @@ import ChatBubble from "@/components/UI/ChatBubble";
 import ChatInput from "@/components/UI/ChatInput";
 import VerticalDots from "../Icons/VerticalDots";
 import io from "socket.io-client";
+import Pusher from "pusher-js";
 
 const ChatPanel = () => {
+  Pusher.logToConsole = true;
+
+  // const pusher = new Pusher("993f5fb44f2246f24dd7", {
+  //   cluster: "ap1",
+  // });
+
+  // const channel = pusher.subscribe("my-channel");
 
   const socket = io('http://localhost:3002', {
     withCredentials: true,
@@ -53,6 +61,8 @@ const ChatPanel = () => {
     addMessage(data);
     socket.emit('message', data)
   };
+
+  console.log(messages, 'mess')
 
   useEffect(() => {
     scrollToBottom();

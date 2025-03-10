@@ -15,7 +15,7 @@ export const POST = async (req: NextRequest) => {
 
     try {
         await connectToDatabase();
-        const senderId = req.cookies.get('user_id')?.value
+        const senderId = req.headers.get("x-user-id")
         const body = await req.json();
         const message = body.message
         const validate = schema.safeParse(body);
