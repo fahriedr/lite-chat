@@ -1,3 +1,5 @@
+"use client"
+
 import { useConversationStore } from "@/store/conversation";
 import { useMessageStore } from "@/store/messages";
 import { Message } from "@/types";
@@ -8,23 +10,13 @@ import ChatBubble from "@/components/UI/ChatBubble";
 import ChatInput from "@/components/UI/ChatInput";
 import VerticalDots from "../Icons/VerticalDots";
 import io from "socket.io-client";
-import Pusher from "pusher-js";
+import {pusherClient, pusherServer} from "@/lib/pusher-helper";
+import { sendMessage } from "@/store/actions/message.actions";
+import { socket } from "@/lib/socket-io";
 
 const ChatPanel = () => {
-  Pusher.logToConsole = true;
 
-  // const pusher = new Pusher("993f5fb44f2246f24dd7", {
-  //   cluster: "ap1",
-  // });
-
-  // const channel = pusher.subscribe("my-channel");
-
-  const socket = io('http://localhost:3002', {
-    withCredentials: true,
-    extraHeaders: {
-      "my-custom-header": "abcd"
-    }
-  })
+  // const socket_io = socket
 
   const { messages, setMessage, addMessage } = useMessageStore(
     (state) => state
@@ -59,10 +51,9 @@ const ChatPanel = () => {
       createdAt: createdAt,
     };
     addMessage(data);
-    socket.emit('message', data)
+    sendMessage(data)
+    // socket.emit('message', data)
   };
-
-  console.log(messages, 'mess')
 
   useEffect(() => {
     scrollToBottom();

@@ -14,8 +14,6 @@ export const GET = async (req: NextRequest) => {
         if (!_id) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
-
-        console.log(_id, '_id')
         
         const conversation = await Conversation.find({
             participants: { $in: [_id]},

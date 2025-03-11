@@ -8,6 +8,8 @@ import io from 'socket.io-client'
 import { useMessageStore } from '@/store/messages';
 import Cookies from 'js-cookie';
 import Loading from '@/components/UI/Loading';
+import { pusherClient } from '@/lib/pusher-helper';
+import { Message } from '@/types';
 
 const ChatCard = () => {
 
@@ -17,16 +19,22 @@ const ChatCard = () => {
   const userId = JSON.parse(user ?? '{}')._id;
 
   useEffect(() => {
-    const socket = io('http://socket.fahriedev.web.id/', { withCredentials: true });
+    pusherClient.subscribe('lite-chat');
 
-    socket.on('message', message => {
-      if (message.receiverId === userId) {
-        addMessage(message);
-      }
-    });
+    const handleMessage = (message: Message) => {
+        if (message.receiverId === userId) {
+            addMessage(message);
+        }
+    };
 
-    return () => {socket.disconnect()};
-  }, [addMessage, userId]);
+    pusherClient.bind('upcoming-message', handleMessage);
+
+    return () => {
+        pusherClient.unbind('upcoming-message', handleMessage);
+        pusherClient.unsubscribe('lite-chat');
+    };
+}, []);
+
 
   const renderChatPanel = () => {
     if (!conversation) return <EmptyChatPanel />;

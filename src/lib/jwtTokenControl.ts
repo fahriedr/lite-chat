@@ -13,7 +13,6 @@ export const isAuthenticated = async (req: NextRequest) => {
       if (token.startsWith("Bearer ")) {
         token = token.replace("Bearer ", "")
       }
-      console.log(token, 'token')
       const decoded = await jose.jwtVerify(token, jwtConfig.secret)
 
       if (decoded.payload._id) {
