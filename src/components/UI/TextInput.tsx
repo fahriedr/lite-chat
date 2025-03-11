@@ -15,7 +15,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 function Errors(props: {errors?: string[]}){
   if(!props.errors?.length) return null;
-  return <div><span className="text-red-500">{props.errors.map(err => <p>{err}</p>)}</span></div>
+  return <div><span className="text-red-500">{props.errors.map((err, i) => <p key={i}>{err}</p>)}</span></div>
 }
 
 const TextInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({id, label, placeholder, onChange, value, type, error, ...otherProps }, ref) => {

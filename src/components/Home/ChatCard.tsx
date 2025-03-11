@@ -33,7 +33,7 @@ const ChatCard = () => {
         pusherClient.unbind('upcoming-message', handleMessage);
         pusherClient.unsubscribe('lite-chat');
     };
-}, []);
+});
 
 
   const renderChatPanel = () => {

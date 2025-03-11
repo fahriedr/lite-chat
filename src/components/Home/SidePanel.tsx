@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ContactCard from "@/components/Home/ContactCard";
 import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
@@ -43,7 +43,7 @@ const SidePanel = () => {
 
   const {conversation, conversationAction, conversationLoadingAction, resetConversation} = useConversationStore((state) => state)
 
-  const getConversations = async () => {
+  const getConversations = useCallback(async () => {
 
     const res = await getConversationsApi()
 
@@ -52,7 +52,18 @@ const SidePanel = () => {
     }
     setConversations(res?.data.data)
     setConversationsLoading(false)
-  }
+  },[router])
+
+  // const getConversations = async () => {
+
+  //   const res = await getConversationsApi()
+
+  //   if(res?.success === false) {
+  //     router.push('/login')
+  //   }
+  //   setConversations(res?.data.data)
+  //   setConversationsLoading(false)
+  // }
 
   const panelOnClick = async (data: any) => {
 

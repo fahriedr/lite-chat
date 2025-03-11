@@ -4,6 +4,8 @@ import Message from "@/models/Message";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic"; // Prevents static pre-rendering
+
 export const GET = async (req: NextRequest) => {
     try {
 

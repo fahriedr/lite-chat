@@ -23,7 +23,7 @@ export default function Home({ }: Props) {
 
     React.useEffect(() => {
         checkUser()
-    }, [])
+    })
 
     if (loading) {
         return (
