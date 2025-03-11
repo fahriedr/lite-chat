@@ -33,76 +33,67 @@ interface Conversation {
 
 const SidePanel = () => {
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const {resetUser} = useUserStore()
+  const { resetUser } = useUserStore();
   const [conversations, setConversations] = useState<Array<Conversation>>([]);
-  const [conversationsLoading, setConversationsLoading] = useState<boolean>(true)
+  const [conversationsLoading, setConversationsLoading] = useState<boolean>(true);
 
-  const {messages, setMessage} = useMessageStore((state) => state)
+  const { messages, setMessage } = useMessageStore((state) => state);
 
-  const {conversation, conversationAction, conversationLoadingAction, resetConversation} = useConversationStore((state) => state)
+  const {
+    conversation,
+    conversationAction,
+    conversationLoadingAction,
+    resetConversation,
+  } = useConversationStore((state) => state);
 
   const getConversations = useCallback(async () => {
+    setConversationsLoading(true); // Ensure loading state is properly handled
 
-    const res = await getConversationsApi()
+    const res = await getConversationsApi();
 
-    if(res?.success === false) {
-      router.push('/login')
+    if (res?.success === false) {
+      router.push("/login");
+      return;
     }
-    setConversations(res?.data.data)
-    setConversationsLoading(false)
-  },[router])
 
-  // const getConversations = async () => {
-
-  //   const res = await getConversationsApi()
-
-  //   if(res?.success === false) {
-  //     router.push('/login')
-  //   }
-  //   setConversations(res?.data.data)
-  //   setConversationsLoading(false)
-  // }
+    setConversations(res?.data.data);
+    setConversationsLoading(false);
+  }, [router]);
 
   const panelOnClick = async (data: any) => {
-
-    conversationLoadingAction()
+    conversationLoadingAction();
 
     const dataConversation = {
       _id: data._id,
       name: data.participants[0].fullname,
       friendId: data.participants[0]._id,
-      friendAvatar: data.participants[0].avatar
-    }
+      friendAvatar: data.participants[0].avatar,
+    };
 
-    conversationAction(dataConversation)
+    conversationAction(dataConversation);
 
-    const res = await getMessagesApi(data.participants[0]._id)
-
-    setMessage(res?.data.data)
-  }
+    const res = await getMessagesApi(data.participants[0]._id);
+    setMessage(res?.data.data);
+  };
 
   const logoutClick = async () => {
-    const res = await logout()
-    if(res) {
-      resetUser()
-      resetConversation()
-      router.push('/login')
+    const res = await logout();
+    if (res) {
+      resetUser();
+      resetConversation();
+      router.push("/login");
     }
-  }
+  };
 
   const lastText = (text: string): string => {
-    if (text.length > 45) {
-      return text.substring(0, 45) + '...'
-    }
-
-    return text
-  }
+    return text.length > 45 ? text.substring(0, 45) + "..." : text;
+  };
 
   useEffect(() => {
-    getConversations()
-  }, [getConversations, messages]);
+    getConversations();
+  }, [getConversations]);
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
@@ -115,34 +106,34 @@ const SidePanel = () => {
 
       {/* Search */}
       <div className="flex flex-col w-full my-1 p-1">
-        <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33] outline-none" placeholder="Search or start new chat"/>
+        <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33] outline-none" placeholder="Search or start new chat" />
       </div>
 
       {/* Contact */}
       <div className="flex flex-col overflow-auto">
         <div className="flex flex-col h-[45rem]">
           {
-            conversationsLoading ? 
-            <div className="flex justify-center place-items-center w-full">
-              <Loading/>
-            </div>
-            :
-            <>
-              {
-                conversations.map((data, i) => {
-                  return (
-                    <ContactCard 
-                      key={i}
-                      name={data.participants[0].fullname} 
-                      lastText={lastText(data.messages[0].message)}
-                      time={data.messages[0].createdAt}
-                      onPress={() => panelOnClick(data)}
-                      avatar={data.participants[0].avatar as string}
-                    />
-                  );
-                })
-              }
-            </>
+            conversationsLoading ?
+              <div className="flex justify-center place-items-center w-full">
+                <Loading />
+              </div>
+              :
+              <>
+                {
+                  conversations.map((data, i) => {
+                    return (
+                      <ContactCard
+                        key={i}
+                        name={data.participants[0].fullname}
+                        lastText={lastText(data.messages[0].message)}
+                        time={data.messages[0].createdAt}
+                        onPress={() => panelOnClick(data)}
+                        avatar={data.participants[0].avatar as string}
+                      />
+                    );
+                  })
+                }
+              </>
           }
         </div>
       </div>

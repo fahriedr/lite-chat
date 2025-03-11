@@ -7,16 +7,16 @@ import React from "react";
 export default function Login() {
 
   const router = useRouter()
-  const checkUser = async () => {
-    const user = await Cookies.get('user')
-    if (user) {
-      router.push("/home")
-    }
-  }
-
   React.useEffect(() => {
-    checkUser()
-  })
+    const checkUser = async () => {
+      const user = await Cookies.get('user');
+      if (user) {
+        router.push("/home");
+      }
+    };
+
+    checkUser();
+  },[router])
   return (
     <>
       <main className="fixed-layout">
