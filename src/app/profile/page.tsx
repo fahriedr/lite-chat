@@ -4,7 +4,7 @@ import { User } from '@/types';
 import { getProfileApi } from '@/utils/api/userApi';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useUserStore } from '../../store/user';
 import Button from '../../components/UI/Button';
@@ -49,7 +49,7 @@ const Profile = () => {
 
   useEffect(() => {
     getProfile()
-  }, [])
+  })
   
   
   return (

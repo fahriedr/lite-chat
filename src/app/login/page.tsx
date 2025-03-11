@@ -16,7 +16,7 @@ export default function Login() {
 
   React.useEffect(() => {
     checkUser()
-  },[])
+  })
   return (
     <>
       <main className="fixed-layout">

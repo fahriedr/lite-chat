@@ -91,7 +91,7 @@ const SidePanel = () => {
 
   useEffect(() => {
     getConversations()
-  }, [messages]);
+  }, [getConversations, messages]);
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
