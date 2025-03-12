@@ -83,12 +83,6 @@ const LoginCard = ({ }: Props) => {
             <p className="mt-2 text-gray-600">Please sign in to your account</p>
           </div>
 
-          {/* {error && (
-            <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg">
-              {error}
-            </div>
-          )} */}
-
           <form
             onSubmit={(e) => {
               e.preventDefault(); // Prevent default form submission
@@ -159,7 +153,7 @@ const LoginCard = ({ }: Props) => {
           </form>
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Dont have an account?
+              {"Don't have an account?"}
               <Link href="/signup" className="font-medium text-blue-600 hover:text-indigo-500">
                 {' '}Sign up
               </Link>
