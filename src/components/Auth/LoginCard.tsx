@@ -159,9 +159,9 @@ const LoginCard = ({ }: Props) => {
           </form>
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Dont have an account?{' '} 
+              Dont have an account?
               <Link href="/signup" className="font-medium text-blue-600 hover:text-indigo-500">
-                Sign up
+                {' '}Sign up
               </Link>
             </p>
           </div>
