@@ -13,7 +13,7 @@ import { Message } from '@/types';
 
 const ChatCard = () => {
 
-  const { conversation, loading } = useConversationStore(state => state);
+  const { conversation, loading, selectedConversation} = useConversationStore(state => state);
   const { addMessage } = useMessageStore(state => state);
   const user = Cookies.get('user');
   const userId = JSON.parse(user ?? '{}')._id;
@@ -37,7 +37,7 @@ const ChatCard = () => {
 
 
   const renderChatPanel = () => {
-    if (!conversation) return <EmptyChatPanel />;
+    if (!selectedConversation) return <EmptyChatPanel />;
     if (loading) return (
       <div className='flex flex-col justify-center items-center w-full h-full'>
         <Loading />

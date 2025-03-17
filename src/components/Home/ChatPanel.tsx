@@ -21,7 +21,7 @@ const ChatPanel = () => {
   const { messages, setMessage, addMessage } = useMessageStore(
     (state) => state
   );
-  const { conversation } = useConversationStore((state) => state);
+  const { conversation, selectedConversation } = useConversationStore((state) => state);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -32,7 +32,7 @@ const ChatPanel = () => {
   const onSendMessage = async (message: string) => {
     const res = await sendMessageApi({
       data: {
-        userId: conversation?.friendId!,
+        userId: selectedConversation?.friendId!,
         message: message,
       },
     });
@@ -52,7 +52,6 @@ const ChatPanel = () => {
     };
     addMessage(data);
     sendMessage(data)
-    // socket.emit('message', data)
   };
 
   useEffect(() => {
@@ -68,11 +67,11 @@ const ChatPanel = () => {
             className="border-solid border rounded-full stroke-black"
             width={50}
             height={50}
-            src={conversation?.friendAvatar ?? "https://robohash.org/random"}
+            src={selectedConversation?.friendAvatar ?? "https://robohash.org/random"}
             alt=""
           />
           <span className="pl-[20px] font-semibold text-lg">
-            {conversation?.name}
+            {selectedConversation?.name}
           </span>
         </div>
         <div className="cursor-pointer">

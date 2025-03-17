@@ -11,32 +11,12 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 
-interface Participant {
-  _id: string,
-  avatar: string,
-  createdAt: string,
-  email: string,
-  fullname: string,
-  updatedAt: string,
-  username: string
-}
-
-
-interface Conversation {
-  _id: string,
-  createdAt: string,
-  updatedAt: string,
-  participants: Array<Participant>,
-  messages: Array<Message>,
-
-}
 
 const SidePanel = () => {
 
   const router = useRouter();
 
   const { resetUser } = useUserStore();
-  const [conversations, setConversations] = useState<Array<Conversation>>([]);
   const [conversationsLoading, setConversationsLoading] = useState<boolean>(true);
 
   const { messages, setMessage } = useMessageStore((state) => state);
@@ -44,6 +24,7 @@ const SidePanel = () => {
   const {
     conversation,
     conversationAction,
+    setSelectedConversation,
     conversationLoadingAction,
     resetConversation,
   } = useConversationStore((state) => state);
@@ -58,9 +39,9 @@ const SidePanel = () => {
       return;
     }
 
-    setConversations(res?.data.data);
+    conversationAction(res?.data.data);
     setConversationsLoading(false);
-  }, [router]);
+  }, [router, conversationAction]);
 
   const panelOnClick = async (data: any) => {
     conversationLoadingAction();
@@ -72,10 +53,11 @@ const SidePanel = () => {
       friendAvatar: data.participants[0].avatar,
     };
 
-    conversationAction(dataConversation);
+    setSelectedConversation(dataConversation);
 
     const res = await getMessagesApi(data.participants[0]._id);
     setMessage(res?.data.data);
+    conversationLoadingAction();
   };
 
   const logoutClick = async () => {
@@ -94,6 +76,8 @@ const SidePanel = () => {
   useEffect(() => {
     getConversations();
   }, [getConversations]);
+
+  console.log(conversation, 'conv')
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
@@ -120,7 +104,7 @@ const SidePanel = () => {
               :
               <>
                 {
-                  conversations.map((data, i) => {
+                  conversation.map((data, i) => {
                     return (
                       <ContactCard
                         key={i}
