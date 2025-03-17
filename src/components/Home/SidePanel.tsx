@@ -6,7 +6,7 @@ import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
 import { Message } from "@/types";
 import { useMessageStore } from "@/store/messages";
 import { useConversationStore } from "@/store/conversation";
-import { logout } from "@/lib/helper";
+import { checkAuth, logout } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
@@ -32,15 +32,19 @@ const SidePanel = () => {
   const getConversations = useCallback(async () => {
     setConversationsLoading(true); // Ensure loading state is properly handled
 
-    const res = await getConversationsApi();
+    const user = await checkAuth()
 
-    if (res?.success === false) {
-      router.push("/login");
-      return;
+    if(user) {
+      const res = await getConversationsApi();
+
+      if (res?.success === false) {
+        router.push("/login");
+        return;
+      }
+  
+      conversationAction(res?.data.data);
+      setConversationsLoading(false);
     }
-
-    conversationAction(res?.data.data);
-    setConversationsLoading(false);
   }, [router, conversationAction]);
 
   const panelOnClick = async (data: any) => {
