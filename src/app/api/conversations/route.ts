@@ -29,6 +29,9 @@ export const GET = async (req: NextRequest) => {
             path: 'messages',
             model: Message
         })
+        .sort({
+            'updatedAt': -1
+        })
 
         return NextResponse.json({
             success: true,

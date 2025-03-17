@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
                 participants: [senderId, receiverId]
             })
         }
-        
+
         const newMessage = new Message({
             senderId,
             receiverId,
@@ -57,6 +57,8 @@ export const POST = async (req: NextRequest) => {
 
         if(newMessage) {
             conversation.messages.push(newMessage._id)
+
+            conversation.updatedAt = new Date();
         }
 
         await Promise.all([conversation.save(), newMessage.save()])

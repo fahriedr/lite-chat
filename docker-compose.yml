@@ -13,16 +13,16 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     command: npm run dev
-    depends_on:
-      - socketio
+    # depends_on:
+    #   - socketio
 
-  socketio:
-    build:
-      context: .
-      dockerfile: Dockerfile.socketio
-    volumes:
-      - ./server.js:/app/server.js
-    ports:
-      - "3002:3002"
-    environment:
-      - PORT=3002
+  # socketio:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.socketio
+  #   volumes:
+  #     - ./server.js:/app/server.js
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - PORT=3002
