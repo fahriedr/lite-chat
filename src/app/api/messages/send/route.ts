@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/lib/database";
 import { getPlainId } from "@/lib/helper";
 import Conversation from "@/models/Conversation";
 import Message from "@/models/Message";
-import User from "@/models/User";
+import User, { IUser } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     // Run User lookup and plain ID extraction in parallel
-    const receiverData = await User.findById(userId).lean();
+    const receiverData = await User.findById(userId).lean<IUser>();
     if (!receiverData) {
       return NextResponse.json(
         { success: false, message: "User not found" },
