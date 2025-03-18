@@ -81,8 +81,6 @@ const SidePanel = () => {
     getConversations();
   }, [getConversations]);
 
-  console.log(conversation, 'conv')
-
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
 

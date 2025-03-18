@@ -90,12 +90,13 @@ export const fetchApi = async (props: FetchProps) => {
 export const checkAuth = async () => {
 
     const checkToken = Cookies.get('token')
+    const checkUser = Cookies.get('user')
 
-    if(!checkToken) {
+    if(!checkToken || !checkUser) {
         return false
     }
 
-    return true
+    return JSON.parse(checkUser)
 }
 
 export const logout = async () => {
@@ -106,8 +107,5 @@ export const logout = async () => {
 
 
 export const getPlainId = async (id: Object) => {
-
     return id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
-
-
 }
