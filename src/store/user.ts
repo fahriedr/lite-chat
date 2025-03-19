@@ -12,7 +12,8 @@ const initialState: User = {
     username: '',
     fullname: '',
     email: '',
-    avatar: ''
+    avatar: '',
+    _id: ''
 }
 
 export const useUserStore = create<UserState>()((set) => ({

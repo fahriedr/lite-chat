@@ -23,7 +23,7 @@ const ChatPanel = () => {
   const { messages, setMessage, addMessage } = useMessageStore(
     (state) => state
   );
-  const { conversation, selectedConversation } = useConversationStore((state) => state);
+  const { conversation, selectedConversation, messageUpdate } = useConversationStore((state) => state);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -52,8 +52,10 @@ const ChatPanel = () => {
       senderId: senderId,
       createdAt: createdAt,
     };
-    addMessage(data);
+
+    addMessage(data)
     sendMessage(data)
+    messageUpdate(data)
   };
 
   useEffect(() => {
@@ -85,7 +87,14 @@ const ChatPanel = () => {
         {messages.length > 0 ? (
           <>
             {messages.map((data, i) => {
-              return <ChatBubble key={i} createdAt={data.createdAt} message={data.message} isSender={user?._id === data.senderId} />;
+              return (
+                <ChatBubble 
+                  key={i} 
+                  createdAt={data.createdAt} 
+                  message={data.message} 
+                  isSender={user?._id === data.senderId} 
+                />
+              );
             })}
           </>
         ) : (

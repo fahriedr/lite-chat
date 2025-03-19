@@ -87,7 +87,7 @@ export const fetchApi = async (props: FetchProps) => {
     }
 }
 
-export const checkAuth = async () => {
+export const checkAuth = () => {
 
     const checkToken = Cookies.get('token')
     const checkUser = Cookies.get('user')

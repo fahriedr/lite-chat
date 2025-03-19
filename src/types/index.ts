@@ -27,6 +27,24 @@ export interface Message {
     createdAt: string
 }
 
+export interface Participant {
+    _id: string,
+    avatar: string,
+    createdAt: string,
+    email: string,
+    fullname: string,
+    updatedAt: string,
+    username: string
+  }
+
+export interface Conversation {
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    participants: Array<Participant>,
+    messages: Array<Message>,
+}
+
 export interface ServerToClientEvents {
     noArg: () => void;
     basicEmit: (a: number, b: string, c: Buffer) => void;

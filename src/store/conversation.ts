@@ -1,4 +1,4 @@
-import { Message, User } from '@/types'
+import { Conversation, Message, User } from '@/types'
 import { create } from 'zustand'
 
 interface SelectedConversation {
@@ -8,23 +8,6 @@ interface SelectedConversation {
     friendAvatar: string
 }
 
-interface Participant {
-    _id: string,
-    avatar: string,
-    createdAt: string,
-    email: string,
-    fullname: string,
-    updatedAt: string,
-    username: string
-  }
-
-interface Conversation {
-    id: string,
-      createdAt: string,
-      updatedAt: string,
-      participants: Array<Participant>,
-      messages: Array<Message>,
-}
 
 interface conversationState {
     selectedConversation: SelectedConversation | null,
@@ -34,14 +17,38 @@ interface conversationState {
     conversationAction: (props: Conversation[]) => void
     conversationLoadingAction: () => void
     resetConversation: () => void
+    messageUpdate: (props: Message) => void
 }
 
 export const useConversationStore = create<conversationState>()((set) => ({
     selectedConversation: null,
     conversation: [],
     loading: true,
-    setSelectedConversation: (props: SelectedConversation) => set((state) => ({selectedConversation: props})),
-    conversationLoadingAction: () => set((state) => ({ loading: false})),
+    setSelectedConversation: (props: SelectedConversation) => set((state) => ({ selectedConversation: props })),
+    conversationLoadingAction: () => set((state) => ({ loading: false })),
     conversationAction: (props: any) => set((state) => ({ conversation: props, loading: false })),
-    resetConversation: () => set((state) => ({conversation: []}))
+    resetConversation: () => set((state) => ({ conversation: [] })),
+    messageUpdate: (newMessage: Message) =>
+        set((state) => {
+            console.log(state.conversation, 'conv')
+            // Find conversation that matches either sender or receiver ID
+            const conversationIndex = state.conversation.findIndex((conv) => {
+                return conv.participants.some(
+                    (p) => p._id === newMessage.senderId || p._id === newMessage.receiverId
+                )
+            });
+
+            if (conversationIndex === -1) return {};
+
+            const updatedConversation = { ...state.conversation[conversationIndex] };
+            // Add new message to the beginning of messages array or replace index 0
+            updatedConversation.messages = [newMessage, ...updatedConversation.messages.slice(1)];
+
+            // Optionally move this conversation to the top (like recent chats)
+            const updatedConversations = [...state.conversation];
+            updatedConversations.splice(conversationIndex, 1);
+            updatedConversations.unshift(updatedConversation);
+
+            return { conversation: updatedConversations };
+        })
 }))
