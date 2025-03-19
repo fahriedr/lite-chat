@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     },
     process.env.SECRET_KEY!,
     {
-      expiresIn: "1h",
+      expiresIn: 60 * 60,
     }
   );
 

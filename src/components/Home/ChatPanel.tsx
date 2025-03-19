@@ -8,16 +8,18 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import ChatBubble from "@/components/UI/ChatBubble";
 import ChatInput from "@/components/UI/ChatInput";
-import VerticalDots from "../Icons/VerticalDots";
+import VerticalDots from "@/icons/VerticalDots";
 import io from "socket.io-client";
 import {pusherClient, pusherServer} from "@/lib/pusher-helper";
 import { sendMessage } from "@/store/actions/message.actions";
 import { socket } from "@/lib/socket-io";
+import { useUserStore } from "@/store/user";
 
 const ChatPanel = () => {
 
   // const socket_io = socket
 
+  const { user } = useUserStore((state) => state)
   const { messages, setMessage, addMessage } = useMessageStore(
     (state) => state
   );
@@ -75,7 +77,6 @@ const ChatPanel = () => {
           </span>
         </div>
         <div className="cursor-pointer">
-          <VerticalDots color="white" size={6} />
         </div>
       </div>
 
@@ -84,7 +85,7 @@ const ChatPanel = () => {
         {messages.length > 0 ? (
           <>
             {messages.map((data, i) => {
-              return <ChatBubble key={i} data={data} />;
+              return <ChatBubble key={i} createdAt={data.createdAt} message={data.message} isSender={user?._id === data.senderId} />;
             })}
           </>
         ) : (

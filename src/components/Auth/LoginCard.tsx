@@ -22,7 +22,6 @@ const LoginCard = ({ }: Props) => {
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const { user, userAction } = useUserStore((state) => state)
 
   const router = useRouter()
 
@@ -51,8 +50,6 @@ const LoginCard = ({ }: Props) => {
 
     Cookies.set('token', res?.data.token)
     Cookies.set('user', JSON.stringify(res?.data.data))
-
-    userAction(res?.data.data)
 
     router.push('/home')
 

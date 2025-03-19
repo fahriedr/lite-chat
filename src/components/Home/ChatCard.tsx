@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import ChatPanel from '@/components/Home/ChatPanel';
 import EmptyChatPanel from '@/components/Home/EmptyChatPanel';
 import SidePanel from '@/components/Home/SidePanel';
-import io from 'socket.io-client'
 import { useMessageStore } from '@/store/messages';
 import Cookies from 'js-cookie';
 import Loading from '@/components/UI/Loading';
@@ -13,7 +12,7 @@ import { Message } from '@/types';
 
 const ChatCard = () => {
 
-  const { conversation, loading, selectedConversation} = useConversationStore(state => state);
+  const { loading, selectedConversation} = useConversationStore(state => state);
   const { addMessage } = useMessageStore(state => state);
   const user = Cookies.get('user');
   const userId = JSON.parse(user ?? '{}')._id;

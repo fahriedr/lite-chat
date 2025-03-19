@@ -10,6 +10,8 @@ import { checkAuth, logout } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
+import { NewChat } from "@/icons/NewChat";
+import toast from "react-hot-toast";
 
 
 const SidePanel = () => {
@@ -44,6 +46,8 @@ const SidePanel = () => {
   
       conversationAction(res?.data.data);
       setConversationsLoading(false);
+    } else {
+      router.push("/login");
     }
   }, [router, conversationAction]);
 
@@ -63,6 +67,10 @@ const SidePanel = () => {
     setMessage(res?.data.data);
     conversationLoadingAction();
   };
+
+  const newChatOnClick = async () => {
+
+  }
 
   const logoutClick = async () => {
     const res = await logout();
@@ -87,13 +95,18 @@ const SidePanel = () => {
       {/* Header */}
       <div className="flex flex-row w-full justify-between py-4 px-2 items-center bg-[#202C33]">
         <span className="font-bold text-2xl">Chats</span>
-        <button onClick={logoutClick} className="bg-[#111B21] p-2 text-xs font-semibold rounded-md">Logout</button>
+        <div className="flex flex-row space-x-4 items-center">
+          <div className="cursor-pointer rounded-full p-[4px] hover:bg-gray-500" onClick={() => toast.success("Hallo")}>
+            <NewChat/>
+          </div>
+          <button onClick={logoutClick} className="bg-[#111B21] p-2 text-xs font-semibold rounded-md">Logout</button>
+        </div>
       </div>
 
       {/* Search */}
-      <div className="flex flex-col w-full my-1 p-1">
+      {/* <div className="flex flex-col w-full my-1 p-1">
         <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33] outline-none" placeholder="Search or start new chat" />
-      </div>
+      </div> */}
 
       {/* Contact */}
       <div className="flex flex-col overflow-auto">
