@@ -33,11 +33,7 @@ const SearchPanel = ({ isOpen }: Props) => {
     setLoading(true)
     const res = await getUsers(searchQuery)
 
-    if (res.length > 0) {
-      setUserSearch(res)
-      setLoading(false)
-    }
-
+    setUserSearch(res)
     setLoading(false)
   }
 
