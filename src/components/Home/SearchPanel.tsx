@@ -40,20 +40,14 @@ const SearchPanel = ({ isOpen }: Props) => {
   React.useEffect(() => {
     if (searchQuery.length > 2) {
       onSearchUser()
+    } else {
+      setUserSearch([])
     }
   }, [searchQuery]);
 
   React.useEffect(() => {
     resetQuery()
   }, [isOpen]);
-
-  React.useEffect(() => {
-    if(searchQuery.length < 3) {
-      setUserSearch([])
-    }
-  }, [searchQuery]);
-
-  console.log(userSearch)
 
   const renderSearchUser = () => {
     if (loading) return (
