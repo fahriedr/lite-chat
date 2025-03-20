@@ -217,3 +217,11 @@ html, body {
   color: #64748b;
   font-size: 1.125rem;
 }
+
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}

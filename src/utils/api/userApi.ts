@@ -12,3 +12,14 @@ export const getProfileApi = async () => {
 
     return data
 }
+
+export const getUsers = async (query: string) => {
+    const res = await fetchApi({
+        url: `/api/users/search?query=${query}`,
+        method: 'GET'
+    })
+
+    const data: User[] | [] = res?.data.data
+
+    return data
+}

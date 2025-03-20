@@ -9,6 +9,8 @@ import Loading from '@/components/UI/Loading';
 import { pusherClient } from '@/lib/pusher-helper';
 import { Message } from '@/types';
 import { useUserStore } from '@/store/user';
+import SearchPanel from './SearchPanel';
+import { useSearchPanelStore } from '@/store/search-panel';
 
 const ChatCard = () => {
 
@@ -16,6 +18,7 @@ const ChatCard = () => {
   const { addMessage } = useMessageStore(state => state);
   const {user} = useUserStore((state) => state)
   const userId = user?._id
+  const {isOpen} = useSearchPanelStore((state) => state)
 
   useEffect(() => {
     pusherClient.subscribe('lite-chat');
@@ -50,6 +53,7 @@ const ChatCard = () => {
 
   return (
     <div className='flex bg-[#111B21] w-full h-full'>
+      <SearchPanel isOpen={isOpen}/>
       <SidePanel />
       {renderChatPanel()}
     </div>

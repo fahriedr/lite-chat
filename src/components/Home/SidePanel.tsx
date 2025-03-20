@@ -12,6 +12,8 @@ import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 import { NewChat } from "@/icons/NewChat";
 import toast from "react-hot-toast";
+import { useSearchPanelStore } from "@/store/search-panel";
+import Tooltip from "../UI/Tooltip";
 
 
 const SidePanel = () => {
@@ -20,8 +22,8 @@ const SidePanel = () => {
 
   const { resetUser } = useUserStore();
   const [conversationsLoading, setConversationsLoading] = useState<boolean>(true);
-
   const { messages, setMessage } = useMessageStore((state) => state);
+  const { setSearchPanelStatus } = useSearchPanelStore((state) => state)
 
   const {
     conversation,
@@ -36,14 +38,14 @@ const SidePanel = () => {
 
     const user = await checkAuth()
 
-    if(user) {
+    if (user) {
       const res = await getConversationsApi();
 
       if (res?.success === false) {
         router.push("/login");
         return;
       }
-  
+
       conversationAction(res?.data.data);
       setConversationsLoading(false);
     } else {
@@ -69,7 +71,7 @@ const SidePanel = () => {
   };
 
   const newChatOnClick = async () => {
-
+    setSearchPanelStatus(true)
   }
 
   const logoutClick = async () => {
@@ -96,24 +98,21 @@ const SidePanel = () => {
       <div className="flex flex-row w-full justify-between py-4 px-2 items-center bg-[#202C33]">
         <span className="font-bold text-2xl">Chats</span>
         <div className="flex flex-row space-x-4 items-center">
-          <div className="cursor-pointer rounded-full p-[4px] hover:bg-gray-500" onClick={() => toast.success("Hallo")}>
-            <NewChat/>
-          </div>
+          <Tooltip text="Start new chat">
+            <div className="cursor-pointer rounded-full p-[4px] hover:bg-gray-500" onClick={newChatOnClick}>
+              <NewChat />
+            </div>
+          </Tooltip>
           <button onClick={logoutClick} className="bg-[#111B21] p-2 text-xs font-semibold rounded-md">Logout</button>
         </div>
       </div>
 
-      {/* Search */}
-      {/* <div className="flex flex-col w-full my-1 p-1">
-        <input type="text" className="w-full px-2 py-2 text-sm rounded bg-[#202C33] outline-none" placeholder="Search or start new chat" />
-      </div> */}
-
       {/* Contact */}
-      <div className="flex flex-col overflow-auto">
-        <div className="flex flex-col h-[45rem]">
+      <div className="flex flex-col overflow-auto h-full">
+        <div className="flex flex-col h-full">
           {
             conversationsLoading ?
-              <div className="flex justify-center place-items-center w-full">
+              <div className="flex justify-center place-items-center w-full h-full">
                 <Loading />
               </div>
               :

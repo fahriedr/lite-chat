@@ -21,6 +21,7 @@ export const config = {
         '/api/message/:path*',
         '/api/contacts/:path*',
         '/api/messages/:path*',
-        '/api/conversations/:path*'
+        '/api/conversations/:path*',
+        '/api/users'
     ]
 }
