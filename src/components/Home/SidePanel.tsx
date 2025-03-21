@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 import { NewChat } from "@/icons/NewChat";
-import toast from "react-hot-toast";
 import { useSearchPanelStore } from "@/store/search-panel";
 import Tooltip from "../UI/Tooltip";
 

@@ -47,16 +47,25 @@ export const POST = async (req: NextRequest) => {
       message,
     });
 
-    // Upsert conversation & push message reference without loading full doc
-    await Conversation.updateOne(
-      { participants: { $all: [senderId, receiverId] } },
-      {
-        $setOnInsert: { participants: [senderId, receiverId] },
-        $push: { messages: newMessage._id },
-        $set: { updatedAt: new Date() },
-      },
-      { upsert: true }
-    );
+    // Check if conversation exists
+    let conversation = await Conversation.findOne({
+      participants: { $all: [senderId, receiverId] }
+    });
+
+    if (!conversation) {
+      // Create a new conversation if it doesn't exist
+      conversation = new Conversation({
+        participants: [senderId, receiverId],
+        messages: [newMessage._id],
+        updatedAt: new Date()
+      });
+      await conversation.save();
+    } else {
+      // Update existing conversation
+      conversation.messages.push(newMessage._id);
+      conversation.updatedAt = new Date();
+      await conversation.save();
+    }
 
     // Save message
     await newMessage.save();

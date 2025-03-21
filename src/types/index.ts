@@ -38,7 +38,7 @@ export interface Participant {
   }
 
 export interface Conversation {
-    id: string,
+    id?: string,
     createdAt: string,
     updatedAt: string,
     participants: Array<Participant>,

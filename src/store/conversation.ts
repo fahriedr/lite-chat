@@ -2,7 +2,7 @@ import { Conversation, Message, User } from '@/types'
 import { create } from 'zustand'
 
 interface SelectedConversation {
-    _id: string
+    _id?: string
     name: string,
     friendId: string,
     friendAvatar: string
@@ -30,7 +30,6 @@ export const useConversationStore = create<conversationState>()((set) => ({
     resetConversation: () => set((state) => ({ conversation: [] })),
     messageUpdate: (newMessage: Message) =>
         set((state) => {
-            console.log(state.conversation, 'conv')
             // Find conversation that matches either sender or receiver ID
             const conversationIndex = state.conversation.findIndex((conv) => {
                 return conv.participants.some(

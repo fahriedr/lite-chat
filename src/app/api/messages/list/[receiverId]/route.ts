@@ -1,7 +1,5 @@
 import { connectToDatabase } from "@/lib/database";
 import Conversation from "@/models/Conversation";
-import User from "@/models/User";
-import { NextApiRequest } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest, context: { params: {receiverId: String}}) => {
@@ -12,9 +10,11 @@ export const GET = async (req: NextRequest, context: { params: {receiverId: Stri
         const receiverId = context.params.receiverId
         const senderId = req.headers.get("x-user-id")
 
-        const conversation = await Conversation.findOne({
-            participants: {$all: [senderId, receiverId]},
-        }).populate('messages')
+        const conversation = await Conversation.findOne(
+            {
+                participants: {$all: [receiverId,senderId]},
+            },
+        ).populate('messages')
 
         let messages = []
 

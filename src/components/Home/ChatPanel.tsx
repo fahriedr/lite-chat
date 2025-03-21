@@ -65,7 +65,7 @@ const ChatPanel = () => {
   return (
     <div className="flex flex-col w-full h-screen">
       {/* Header */}
-      <div className="flex flex-row w-full px-4 items-center bg-[#202C33] h-[64px] py-[7px] justify-between">
+      <div className="flex flex-row w-full px-4 items-center bg-[#202C33] h-[72px] py-[7px] justify-between">
         <div className="flex flex-row items-center">
           <Image
             className="border-solid border rounded-full stroke-black"
@@ -83,7 +83,7 @@ const ChatPanel = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex flex-col flex-1 overflow-auto bg-[url('/images/wa-bg.svg')] px-8">
+      <div className="flex flex-col flex-1 overflow-y-scroll bg-[url('/images/wa-bg.svg')] px-8 justify-end">
         {messages.length > 0 ? (
           <>
             {messages.map((data, i) => {
