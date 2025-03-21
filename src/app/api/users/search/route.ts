@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/database";
 import Conversation from "@/models/Conversation";
 import User, { IUser } from "@/models/User";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic"; // Prevents static pre-rendering
@@ -10,7 +11,7 @@ export const GET = async (req: NextRequest) => {
 
         await connectToDatabase()
 
-        const _id = req.headers.get("x-user-id")
+        const _id = req.headers.get("x-user-id") as string
         const query = req.nextUrl.searchParams.get('query')
         
         const users = await User.find({

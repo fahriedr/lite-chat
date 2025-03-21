@@ -17,11 +17,11 @@ export const middleware = async (req: NextRequest) => {
 
 export const config = {
     matcher: [
-        '/api/profile', 
+        '/api/profile/:path*', 
         '/api/message/:path*',
         '/api/contacts/:path*',
         '/api/messages/:path*',
         '/api/conversations/:path*',
-        '/api/users'
+        '/api/users/:path*'
     ]
 }
