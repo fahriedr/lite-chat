@@ -65,7 +65,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
         return NextResponse.json({
             data: res,
-            token : token
+            token : token,
+            success: true
         })
     } catch (error) {
         console.log(error)

@@ -32,7 +32,8 @@ export const GET = async (req: NextRequest) => {
 
         return NextResponse.json({
             success: true,
-            data: users
+            data: users,
+            message: 'Data successfully retreive'
         })
         
     } catch (error) {
