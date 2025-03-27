@@ -46,7 +46,7 @@ const SearchPanel = ({ isOpen }: Props) => {
   }
 
   const panelOnClick = async (data: any) => {
-    conversationLoadingAction();
+    conversationLoadingAction(true);
 
     const dataConversation = {
       name: data.fullname,
@@ -58,7 +58,7 @@ const SearchPanel = ({ isOpen }: Props) => {
 
     const res = await getMessagesApi(data._id);
     setMessage(res?.data.data);
-    conversationLoadingAction();
+    conversationLoadingAction(false);
     resetQuery()
     setSearchPanelStatus(false)
   };

@@ -4,10 +4,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { Toaster } from 'react-hot-toast';
-import { MessageCircleIcon } from '@/icons/MessageCircle';
-import { GroupChatIcon } from '@/icons/GroupChat';
-import { MenuIcon } from '@/icons/Menu';
 import ChatSvg from '../../public/images/chat.svg'
 import Image from 'next/image';
 
@@ -22,16 +18,6 @@ export default function LandingPage() {
       title: "Get Started",
       description: "Start with signing up or sign in.",
       icon: <Image src={ChatSvg} alt="Login image" />
-    },
-    {
-      title: "Connect with Friends",
-      description: "Find and chat with your friends in real-time.",
-      icon: <MessageCircleIcon size={120} className="mx-auto text-blue-500" />
-    },
-    {
-      title: "Create Groups",
-      description: "Make group chats for teams, family, or friends.",
-      icon: <GroupChatIcon size={120} className="mx-auto text-blue-500" />
     }
   ];
 
@@ -43,9 +29,9 @@ export default function LandingPage() {
           Lite Chat | Auth
         </title>
       </Head>
-      <main className="fixed-layout">
+      <main className="fixed inset-0 m-4">
         <div className="app-container">
-          <div className="min-h-screen bg-blue-600 flex flex-col items-center justify-center p-4">
+          <div className="min-h-screen bg-main-color flex flex-col items-center justify-center p-4">
             <div className="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-xl">
               {/* Main content */}
               <div className="px-8 py-10 text-center">
@@ -65,7 +51,7 @@ export default function LandingPage() {
                 <div className="space-y-3">
                   <Link
                     href="/signup"
-                    className="block w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition duration-200 text-center"
+                    className="block w-full py-3 px-4 bg-vibrant-purple text-white font-medium rounded-full transition duration-200 text-center"
                   >
                     Sign up
                   </Link>

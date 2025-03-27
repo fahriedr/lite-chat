@@ -10,25 +10,23 @@ import ChatBubble from "@/components/UI/ChatBubble";
 import ChatInput from "@/components/UI/ChatInput";
 import VerticalDots from "@/icons/VerticalDots";
 import io from "socket.io-client";
-import {pusherClient, pusherServer} from "@/lib/pusher-helper";
+import { pusherClient, pusherServer } from "@/lib/pusher-helper";
 import { sendMessage } from "@/store/actions/message.actions";
 import { socket } from "@/lib/socket-io";
 import { useUserStore } from "@/store/user";
+import Loading from "../UI/Loading";
 
 const ChatPanel = () => {
+  const { user } = useUserStore((state) => state);
+  const { messages, setMessage, addMessage } = useMessageStore((state) => state);
+  const { conversation, selectedConversation, loading, messageUpdate } = useConversationStore((state) => state);
 
-  // const socket_io = socket
-
-  const { user } = useUserStore((state) => state)
-  const { messages, setMessage, addMessage } = useMessageStore(
-    (state) => state
-  );
-  const { conversation, selectedConversation, messageUpdate } = useConversationStore((state) => state);
-
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const onSendMessage = async (message: string) => {
@@ -39,23 +37,13 @@ const ChatPanel = () => {
       },
     });
 
-    const _id = res?.data.data._id as string;
-    const newMessage = res?.data.data.message as string;
-    const receiverId = res?.data.data.receiverId as string;
-    const senderId = res?.data.data.senderId as string;
-    const createdAt = res?.data.data.createdAt as string;
-
-    const data: Message = {
-      _id: _id,
-      message: newMessage,
-      receiverId: receiverId,
-      senderId: senderId,
-      createdAt: createdAt,
-    };
-
-    addMessage(data)
-    sendMessage(data)
-    messageUpdate(data)
+    const newMessage = res?.data.data;
+    if (newMessage) {
+      addMessage(newMessage);
+      sendMessage(newMessage);
+      messageUpdate(newMessage);
+      setTimeout(scrollToBottom, 100); // Ensure scrolling after state updates
+    }
   };
 
   useEffect(() => {
@@ -78,37 +66,31 @@ const ChatPanel = () => {
             {selectedConversation?.name}
           </span>
         </div>
-        <div className="cursor-pointer">
-        </div>
       </div>
 
       {/* Messages */}
-      <div className="flex flex-col flex-1 overflow-y-scroll bg-[url('/images/wa-bg.svg')] px-8 justify-end">
-        {messages.length > 0 ? (
-          <>
-            {messages.map((data, i) => {
-              return (
-                <ChatBubble 
-                  key={i} 
-                  createdAt={data.createdAt} 
-                  message={data.message} 
-                  isSender={user?._id === data.senderId} 
-                />
-              );
-            })}
-          </>
-        ) : (
-          <></>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="flex flex-col flex-1 overflow-y-auto bg-[url('/images/wa-bg.svg')] px-8">
+          {messages.map((data, i) => (
+            <ChatBubble
+              key={i}
+              createdAt={data.createdAt}
+              message={data.message}
+              isSender={user?._id === data.senderId}
+            />
+          ))}
+          {/* Auto-scroll target */}
+          <div ref={messagesEndRef} />
+        </div>
+      )}
 
       {/* Input */}
-      <ChatInput
-        onSendMessage={onSendMessage}
-      />
+      <ChatInput onSendMessage={onSendMessage} />
     </div>
   );
 };
+
 
 export default ChatPanel;

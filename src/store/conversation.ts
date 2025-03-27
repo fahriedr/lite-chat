@@ -15,7 +15,7 @@ interface conversationState {
     loading: boolean,
     setSelectedConversation: (props: SelectedConversation) => void,
     conversationAction: (props: Conversation[]) => void
-    conversationLoadingAction: () => void
+    conversationLoadingAction: (props: boolean) => void
     resetConversation: () => void
     messageUpdate: (props: Message) => void
 }
@@ -23,18 +23,16 @@ interface conversationState {
 export const useConversationStore = create<conversationState>()((set) => ({
     selectedConversation: null,
     conversation: [],
-    loading: true,
+    loading: false,
     setSelectedConversation: (props: SelectedConversation) => set((state) => ({ selectedConversation: props })),
-    conversationLoadingAction: () => set((state) => ({ loading: false })),
-    conversationAction: (props: any) => set((state) => ({ conversation: props, loading: false })),
+    conversationLoadingAction: (props: boolean) => set((state) => ({ loading: props })),
+    conversationAction: (props: any) => set((state) => ({ conversation: props})),
     resetConversation: () => set((state) => ({ conversation: [] })),
     messageUpdate: (newMessage: Message) =>
         set((state) => {
-            // Find conversation that matches either sender or receiver ID
+            // // Find conversation that matches either sender or receiver ID
             const conversationIndex = state.conversation.findIndex((conv) => {
-                return conv.participants.some(
-                    (p) => p._id === newMessage.senderId || p._id === newMessage.receiverId
-                )
+                return conv.participants._id === newMessage.senderId || conv.participants._id === newMessage.receiverId
             });
 
             if (conversationIndex === -1) return {};

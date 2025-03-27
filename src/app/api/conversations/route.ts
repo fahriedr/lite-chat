@@ -27,15 +27,26 @@ export const GET = async (req: NextRequest) => {
         })
         .populate({
             path: 'messages',
-            model: Message
+            model: Message,
+            options: {
+                limit: 1,
+                sort: { createdAt: -1 }
+            }
         })
         .sort({
             'updatedAt': -1
         })
+        .lean()
+
+        const conversationWithObject = conversation.map(conv => ({
+            ...conv,
+            lastMessage: conv.messages[0].message || null,
+            participants: conv.participants[0] || null
+        }));
 
         return NextResponse.json({
             success: true,
-            data: conversation,
+            data: conversationWithObject,
             message: 'Data successfully retreive'
         })
         

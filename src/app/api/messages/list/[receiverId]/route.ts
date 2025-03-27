@@ -14,13 +14,20 @@ export const GET = async (req: NextRequest, context: { params: {receiverId: Stri
             {
                 participants: {$all: [receiverId,senderId]},
             },
-        ).populate('messages')
+        ).populate({
+            path: 'messages',
+            options: {
+                sort: { createdAt: -1 },
+                limit: 50
+            }
+        });
 
         let messages = []
 
         if(conversation) {
 
-            messages = conversation.messages
+            messages = conversation.messages.reverse()
+
         }
 
         return NextResponse.json({

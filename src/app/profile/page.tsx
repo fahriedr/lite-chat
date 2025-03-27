@@ -1,15 +1,29 @@
 'use client'
-import { checkAuth, logout } from '@/lib/helper';
-import { User } from '@/types';
-import { getProfileApi } from '@/utils/api/userApi';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useUserStore } from '../../store/user';
 import Button from '../../components/UI/Button';
+import { swrFetcher, FetchProps } from '@/lib/useSwr-helper';
+import useSWR from 'swr';
+import Loading from '@/components/UI/Loading';
 
 const Profile = () => {
+
+  const fetchProps: FetchProps = {
+    url: '/api/profile',
+    method: 'get'
+  };
+
+  const { 
+    data, 
+    error, 
+    isLoading 
+  } = useSWR(
+    [fetchProps.url, fetchProps.method], 
+    () => swrFetcher(fetchProps)
+  );
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -25,39 +39,28 @@ const Profile = () => {
     Cookies.remove("token");
     Cookies.remove("user");
     setLoading(false);
-    router.push("/");
+    router.push("/login");
   };
 
   useEffect(() => {
-    const getProfile = async () => {
-      setPageLoading(true);
-
-      const checkUser = await checkAuth();
-
-      if (!checkUser) {
-        router.push("/login");
-      } else {
-        const dataUser: User = await getProfileApi();
-        userAction(dataUser);
-        setPageLoading(false);
-      }
-    };
-
-    getProfile();
-  }, [router, userAction]);
-
+    if(error) {
+      redirect('/error')
+    }
+    userAction(data)
+  }, [data]);
 
   return (
     <div className='justify-center items-center m-auto h-screen w-screen px-10'>
       <div className='flex flex-col items-center w-[100%] h-[70%] bg-blue-500'>
-        {pageLoading ? <><div className="border-gray-300 h-6 w-6 animate-spin rounded-full border-4 border-t-blue-600" /></> : <><span>Profile Page</span>
-          <Image loader={imageLoader} src='me.png' alt="profile image" width={100} height={100} />
+        {isLoading ? 
+          <Loading/> : 
+          <><span>Profile Page</span>
+          {/* <Image loader={imageLoader} src='me.png' alt="profile image" width={100} height={100} /> */}
           <span>{user?.fullname}</span>
           <span>{user?.username}</span>
           <span>{user?.email}</span>
-          <Button text='Logout' onClick={logout} loading={loading} /></>}
-
-
+          <Button text='Logout' onClick={logout} loading={loading} /></>
+        }
       </div>
     </div>
   )

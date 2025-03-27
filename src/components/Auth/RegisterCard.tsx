@@ -77,7 +77,7 @@ const RegisterCard = ({ }: Props) => {
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
       {/* Left panel with illustration/brand */}
-      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col items-center justify-center p-12 text-white">
+      <div className="hidden lg:flex lg:w-1/2 bg-main-color flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md">
           {/* <MessageCircle size={64} className="mb-8" /> */}
           <h1 className="text-4xl font-bold mb-6">Connect with friends and teams</h1>
@@ -173,7 +173,7 @@ const RegisterCard = ({ }: Props) => {
               onClick={handleSubmit}
               type="button"
               disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center"
+              className="w-full py-3 px-4 bg-vibrant-purple hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center"
             >
               {loading ? (
                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

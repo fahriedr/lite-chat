@@ -26,6 +26,10 @@ export const comparePassword = async (password: string, hash: string) => {
     return check
 }
 
+export const lastText = (text: string): string => {
+    return text.length > 45 ? text.substring(0, 45) + "..." : text;
+};
+
 export const fetchApi = async (props: FetchProps) => {
 
     try {
@@ -35,18 +39,18 @@ export const fetchApi = async (props: FetchProps) => {
         }
 
         const checkToken = await checkAuth()
-    
+
         if (checkToken) {
             const token = Cookies.get('token')
             headers['Authorization'] = 'Bearer ' + token
         }
-    
+
         let data = {}
-    
-        if(props.data) {
+
+        if (props.data) {
             data = props.data
         }
-        
+
         const res: AxiosResponse = await axios({
             url: props.url,
             method: props.method,
@@ -54,23 +58,23 @@ export const fetchApi = async (props: FetchProps) => {
             headers: headers
         })
 
-        const response: CustomResponse  = {
+        const response: CustomResponse = {
             message: res.data.message,
             success: true,
             data: res.data
         }
 
         return response
-        
+
     } catch (error: unknown) {
 
-        if(axios.isAxiosError(error)) {
+        if (axios.isAxiosError(error)) {
             const response: CustomResponse = {
                 message: error.response?.data.message,
                 success: false
             }
 
-            if(error.response?.request.status === 401) {
+            if (error.response?.request.status === 401) {
                 Cookies.remove('user')
                 Cookies.remove('token')
 
@@ -92,7 +96,7 @@ export const checkAuth = () => {
     const checkToken = Cookies.get('token')
     const checkUser = Cookies.get('user')
 
-    if(!checkToken || !checkUser) {
+    if (!checkToken || !checkUser) {
         return false
     }
 

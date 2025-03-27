@@ -3,25 +3,25 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ContactCard from "@/components/Home/ContactCard";
 import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
-import { Message } from "@/types";
 import { useMessageStore } from "@/store/messages";
 import { useConversationStore } from "@/store/conversation";
-import { checkAuth, logout } from "@/lib/helper";
-import { useRouter } from "next/navigation";
+import { checkAuth, lastText, logout } from "@/lib/helper";
+import { redirect, useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 import { NewChat } from "@/icons/NewChat";
 import { useSearchPanelStore } from "@/store/search-panel";
 import Tooltip from "../UI/Tooltip";
-
+import { FetchProps, swrFetcher } from "@/lib/useSwr-helper";
+import useSWR from "swr";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SidePanel = () => {
 
   const router = useRouter();
 
   const { resetUser } = useUserStore();
-  const [conversationsLoading, setConversationsLoading] = useState<boolean>(true);
-  const { messages, setMessage } = useMessageStore((state) => state);
+  const { setMessage } = useMessageStore((state) => state);
   const { setSearchPanelStatus } = useSearchPanelStore((state) => state)
 
   const {
@@ -32,41 +32,36 @@ const SidePanel = () => {
     resetConversation,
   } = useConversationStore((state) => state);
 
-  const getConversations = useCallback(async () => {
-    setConversationsLoading(true); // Ensure loading state is properly handled
+  //Fetch Conversation
+  const fetchProps: FetchProps = {
+    url: '/api/conversations',
+    method: 'get'
+  };
 
-    const user = await checkAuth()
-
-    if (user) {
-      const res = await getConversationsApi();
-
-      if (res?.success === false) {
-        router.push("/login");
-        return;
-      }
-
-      conversationAction(res?.data.data);
-      setConversationsLoading(false);
-    } else {
-      router.push("/login");
-    }
-  }, [router, conversationAction]);
+  const { data: conversations, error, isLoading } = useSWR(
+    [fetchProps.url, fetchProps.method],
+    () => swrFetcher(fetchProps)
+  );
 
   const panelOnClick = async (data: any) => {
-    conversationLoadingAction();
+    conversationLoadingAction(true);
+    try {
+      const dataConversation = {
+        _id: data._id,
+        name: data.participants.fullname,
+        friendId: data.participants._id,
+        friendAvatar: data.participants.avatar,
+      };
+      setSelectedConversation(dataConversation);
+      const res = await getMessagesApi(data.participants._id);
 
-    const dataConversation = {
-      _id: data._id,
-      name: data.participants[0].fullname,
-      friendId: data.participants[0]._id,
-      friendAvatar: data.participants[0].avatar,
-    };
-
-    setSelectedConversation(dataConversation);
-
-    const res = await getMessagesApi(data.participants[0]._id);
-    setMessage(res?.data.data);
-    conversationLoadingAction();
+      setMessage(res?.data.data)
+      conversationLoadingAction(false);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      conversationLoadingAction(false);
+    }
   };
 
   const newChatOnClick = async () => {
@@ -82,19 +77,23 @@ const SidePanel = () => {
     }
   };
 
-  const lastText = (text: string): string => {
-    return text.length > 45 ? text.substring(0, 45) + "..." : text;
-  };
+  useEffect(() => {
+    if (error) {
+      router.push('/error');
+    }
+  }, [error, router]);
 
   useEffect(() => {
-    getConversations();
-  }, [getConversations]);
+    if (conversations) {
+      conversationAction(conversations.data);
+    }
+  }, [conversations, conversationAction]);
 
   return (
     <div className="flex flex-col h-full w-[568px] border-r-[1px] border-gray-700">
 
       {/* Header */}
-      <div className="flex flex-row w-full justify-between py-4 px-2 items-center bg-[#202C33]">
+      <div className="flex flex-row w-full justify-between mb-2 py-4 px-2 items-center bg-[#202C33]">
         <span className="font-bold text-2xl">Chats</span>
         <div className="flex flex-row space-x-4 items-center">
           <Tooltip text="Start new chat">
@@ -110,27 +109,34 @@ const SidePanel = () => {
       <div className="flex flex-col overflow-auto h-full">
         <div className="flex flex-col h-full">
           {
-            conversationsLoading ?
+            isLoading ?
               <div className="flex justify-center place-items-center w-full h-full">
                 <Loading />
               </div>
               :
-              <>
-                {
-                  conversation.map((data, i) => {
-                    return (
+              (
+                <AnimatePresence>
+                  {conversation.map((data, i) => (
+                    <motion.div
+                      key={data.participants._id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      layout // This enables smooth position change when order updates
+                    >
                       <ContactCard
-                        key={i}
-                        name={data.participants[0].fullname}
-                        lastText={lastText(data.messages[0].message)}
-                        time={data.messages[0].createdAt}
+                        id={data.participants._id}
+                        name={data.participants.fullname}
+                        lastText={lastText(data.messages[0]?.message || "")}
+                        time={data.messages[0]?.createdAt}
                         onPress={() => panelOnClick(data)}
-                        avatar={data.participants[0].avatar as string}
+                        avatar={data.participants.avatar as string}
                       />
-                    );
-                  })
-                }
-              </>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              )
           }
         </div>
       </div>

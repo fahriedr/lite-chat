@@ -41,8 +41,9 @@ export interface Conversation {
     id?: string,
     createdAt: string,
     updatedAt: string,
-    participants: Array<Participant>,
-    messages: Array<Message>,
+    participants: Participant,
+    messages: Message[],
+    lastMessage?: string
 }
 
 export interface ServerToClientEvents {

@@ -1,8 +1,10 @@
+import { useConversationStore } from "@/store/conversation";
 import moment from "moment";
 import Image from "next/image";
 import React from "react";
 
 interface Props {
+  id?: string;
   name?: string;
   lastText?: string;
   time?: string;
@@ -10,9 +12,10 @@ interface Props {
   onPress?: (conversation: any) => void;
 }
 
-const ContactCard = ({ name, lastText, time, avatar = 'https://robohash/random', onPress }: Props) => {
+const ContactCard = ({id, name, lastText, time, avatar = 'https://robohash/random', onPress }: Props) => {
 
-
+  const { selectedConversation } = useConversationStore((state) => state)
+  
   const lastMessageTime = (date: any) => {
     const paramDate = moment(date).format('DD/MM/YY')
 
@@ -28,7 +31,7 @@ const ContactCard = ({ name, lastText, time, avatar = 'https://robohash/random',
   return (
     <>
       <div
-        className="px-4 py-3 flex items-center cursor-pointer hover:bg-[#202C33] transition duration-200"
+        className={`px-2 py-3 flex items-center cursor-pointer hover:bg-hover-color transition duration-200 ${id && id === selectedConversation?.friendId ? 'bg-hover-color' : ''}`}
         onClick={onPress}
       >
         {/* Avatar */}
