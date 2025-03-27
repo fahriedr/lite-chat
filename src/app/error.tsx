@@ -1,63 +1,55 @@
-"use client"
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { XCircle, RefreshCw, Home } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import { XCircle, Home } from "lucide-react";
 
-interface ErrorPageProps {
-  error?: Error & { digest?: string };
-  reset?: () => void;
-}
-
-export default function ErrorPage({ error, reset }: ErrorPageProps) {
+export default function ErrorPage({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-main-color px-4 py-8">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-8 text-center">
-        <XCircle 
-          className="mx-auto mb-6 text-red-500" 
-          size={80} 
-          strokeWidth={1.5}
-        />
-        
+        <XCircle className="mx-auto mb-6 text-red-500" size={80} strokeWidth={1.5} />
+
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Oops! Something went wrong
         </h1>
-        
-        <p className="text-gray-600 mb-6">
-          We encountered an unexpected error
-        </p>
-        
-        {/* {error.digest && (
+
+        <p className="text-gray-600 mb-6">We encountered an unexpected error</p>
+
+        {error?.digest && (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-500 break-words">
-              Error ID: {error.digest}
-            </p>
+            <p className="text-sm text-gray-500 break-words">Error ID: {error.digest}</p>
           </div>
-        )} */}
-        
+        )}
+
         <div className="flex justify-center space-x-4">
-          {/* <button 
+          <button
             onClick={reset}
             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
           >
-            <RefreshCw size={18} />
             Try Again
-          </button> */}
-          
-          <Link 
-            href="/home" 
+          </button>
+
+          <Link
+            href="/home"
             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
           >
             <Home size={18} />
             Back to Home
           </Link>
         </div>
-        
+
         <div className="mt-8 text-sm text-gray-500">
           <p>If the problem persists, please contact our support team.</p>
         </div>
       </div>
-      
+
       <div className="mt-8 text-center">
         <p className="text-gray-400 text-sm">
           © {new Date().getFullYear()} Lite Chat. All rights reserved.
