@@ -5,10 +5,10 @@ import Link from "next/link";
 import { XCircle, Home } from "lucide-react";
 
 export default function ErrorPage({
-  error,
+  // error,
   reset,
 }: {
-  error: Error & { digest?: string };
+  // error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (
@@ -22,11 +22,11 @@ export default function ErrorPage({
 
         <p className="text-gray-600 mb-6">We encountered an unexpected error</p>
 
-        {error?.digest && (
+        {/* {error?.digest && (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-500 break-words">Error ID: {error.digest}</p>
           </div>
-        )}
+        )} */}
 
         <div className="flex justify-center space-x-4">
           <button
