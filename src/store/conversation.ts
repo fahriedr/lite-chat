@@ -18,6 +18,7 @@ interface conversationState {
     conversationLoadingAction: (props: boolean) => void
     resetConversation: () => void
     messageUpdate: (props: Message) => void
+    updateUnreadMessage: () => void
 }
 
 export const useConversationStore = create<conversationState>()((set) => ({
@@ -47,5 +48,18 @@ export const useConversationStore = create<conversationState>()((set) => ({
             updatedConversations.unshift(updatedConversation);
 
             return { conversation: updatedConversations };
+        }),
+    updateUnreadMessage: () => set((state) => {
+
+        const conversation = state.conversation.find((conv) => {
+            return conv.participants._id === state.selectedConversation?.friendId
         })
+
+        if (conversation) {
+            if(conversation.unreadMessage > 0) {
+                conversation.unreadMessage -= 1
+            }
+        }
+        return {}
+    }),
 }))

@@ -2,6 +2,7 @@ import { useConversationStore } from "@/store/conversation";
 import moment from "moment";
 import Image from "next/image";
 import React from "react";
+import CircleChipBadge from "@/components/UI/ChipBadge";
 
 interface Props {
   id?: string;
@@ -9,13 +10,14 @@ interface Props {
   lastText?: string;
   time?: string;
   avatar?: string;
+  unreadMessage?: number;
   onPress?: (conversation: any) => void;
 }
 
-const ContactCard = ({id, name, lastText, time, avatar = 'https://robohash/random', onPress }: Props) => {
+const ContactCard = ({ id, name, lastText, time, avatar = 'https://robohash/random', onPress, unreadMessage = 0 }: Props) => {
 
   const { selectedConversation } = useConversationStore((state) => state)
-  
+
   const lastMessageTime = (date: any) => {
     const paramDate = moment(date).format('DD/MM/YY')
 
@@ -46,12 +48,29 @@ const ContactCard = ({id, name, lastText, time, avatar = 'https://robohash/rando
         </div>
 
         {/* Message Content */}
-        <div className="ml-4 flex-1 border-b border-gray-700 py-2">
-          <div className="flex justify-between items-center">
+        <div className="ml-4 flex flex-1 flex-row justify-between items-center border-b border-gray-700 py-2">
+          <div className="flex flex-col">
             <p className="text-white font-medium">{name}</p>
-            <p className="text-xs text-gray-400">{lastMessageTime(time)}</p>
+            <p className="text-gray-400 mt-1 text-sm truncate">{lastText}</p>
           </div>
-          <p className="text-gray-400 mt-1 text-sm truncate">{lastText}</p>
+
+          <div className="flex flex-row items-center gap-2">
+            {
+              unreadMessage > 0 ?
+              <div className="notification">
+                <CircleChipBadge
+                  label={unreadMessage}
+                  color="green" // Options: blue, green, red, yellow, purple, gray
+                  size="sm"    // Options: sm, md, lg
+                />
+              </div>
+              :
+              <></>
+            }
+            <div className="flex flex-row">
+              <p className="text-xs text-gray-400">{lastMessageTime(time)}</p>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => {
         const conversation = await Conversation.find({
             participants: { $in: [_id]},
         },
-        {"messages": {$slice: -1}})
+        )
         .populate({
             path: 'participants',
             match: {_id: { $ne: _id}}
@@ -29,7 +29,6 @@ export const GET = async (req: NextRequest) => {
             path: 'messages',
             model: Message,
             options: {
-                limit: 1,
                 sort: { createdAt: -1 }
             }
         })
@@ -41,7 +40,9 @@ export const GET = async (req: NextRequest) => {
         const conversationWithObject = conversation.map(conv => ({
             ...conv,
             lastMessage: conv.messages[0].message || null,
-            participants: conv.participants[0] || null
+            participants: conv.participants[0] || null,
+            unreadMessage: (conv.messages ?? []).filter((msg: { isRead: boolean, receiverId: string }) => !msg.isRead && msg.receiverId.toString() === _id).length,
+            messages: [conv.messages[0]]
         }));
 
         return NextResponse.json({

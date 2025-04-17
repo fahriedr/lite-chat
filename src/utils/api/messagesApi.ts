@@ -39,3 +39,15 @@ export const sendMessageApi = async (props: MessageProps) => {
 
     return res
 }
+
+export const updateMessageStatusApi = async (messageId: string) => {
+    const res = await fetchApi({
+        url: `/api/messages/update-status`,
+        method: 'POST',
+        data: {
+            messageId: messageId
+        }
+    })
+
+    return res
+}

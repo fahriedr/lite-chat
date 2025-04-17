@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ContactCard from "@/components/Home/ContactCard";
-import { getConversationsApi, getMessagesApi } from "@/utils/api/messagesApi";
+import {  getMessagesApi } from "@/utils/api/messagesApi";
 import { useMessageStore } from "@/store/messages";
 import { useConversationStore } from "@/store/conversation";
-import { checkAuth, lastText, logout } from "@/lib/helper";
-import { redirect, useRouter } from "next/navigation";
+import { lastText, logout } from "@/lib/helper";
+import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 import { NewChat } from "@/icons/NewChat";
@@ -132,6 +132,7 @@ const SidePanel = () => {
                         time={data.messages[0]?.createdAt}
                         onPress={() => panelOnClick(data)}
                         avatar={data.participants.avatar as string}
+                        unreadMessage={data.unreadMessage}
                       />
                     </motion.div>
                   ))}

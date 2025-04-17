@@ -1,15 +1,35 @@
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 type Props  = {
+  id: string
   message: string
   createdAt: string
   isSender: boolean
+  onSeen: (id: string) => void
+  isRead: boolean
 }
 
-const ChatBubble = ({ message, createdAt, isSender}: Props) => {
+const ChatBubble = ({id, message, createdAt, isSender, onSeen, isRead}: Props) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && (!isSender)) {
+        if(!isRead) {
+          onSeen(id);
+        }
+      }
+    });
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, []);
   return (
-    <div className={`flex ${isSender ? "justify-end" : "justify-start"} my-[1px]`}>
+    <div ref={ref} className={`flex ${isSender ? "justify-end" : "justify-start"} my-[1px]`}>
       <div
         className={`flex flex-row w-fit max-w-[60%] px-[6px] py-[6px] min-w-[80px] rounded-lg shadow-md ${
           isSender

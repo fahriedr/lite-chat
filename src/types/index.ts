@@ -24,6 +24,7 @@ export interface Message {
     senderId: string,
     receiverId: string,
     message: string,
+    isRead?: boolean,
     createdAt: string
 }
 
@@ -44,6 +45,7 @@ export interface Conversation {
     participants: Participant,
     messages: Message[],
     lastMessage?: string
+    unreadMessage: number
 }
 
 export interface ServerToClientEvents {

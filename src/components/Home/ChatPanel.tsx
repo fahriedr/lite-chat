@@ -3,23 +3,21 @@
 import { useConversationStore } from "@/store/conversation";
 import { useMessageStore } from "@/store/messages";
 import { Message } from "@/types";
-import { sendMessageApi } from "@/utils/api/messagesApi";
+import { sendMessageApi, updateMessageStatusApi } from "@/utils/api/messagesApi";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import ChatBubble from "@/components/UI/ChatBubble";
 import ChatInput from "@/components/UI/ChatInput";
-import VerticalDots from "@/icons/VerticalDots";
-import io from "socket.io-client";
-import { pusherClient, pusherServer } from "@/lib/pusher-helper";
 import { sendMessage } from "@/store/actions/message.actions";
 import { socket } from "@/lib/socket-io";
 import { useUserStore } from "@/store/user";
 import Loading from "../UI/Loading";
 
 const ChatPanel = () => {
+
   const { user } = useUserStore((state) => state);
   const { messages, setMessage, addMessage } = useMessageStore((state) => state);
-  const { conversation, selectedConversation, loading, messageUpdate } = useConversationStore((state) => state);
+  const { conversation, selectedConversation, loading, messageUpdate, updateUnreadMessage } = useConversationStore((state) => state);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -45,6 +43,13 @@ const ChatPanel = () => {
       setTimeout(scrollToBottom, 100); // Ensure scrolling after state updates
     }
   };
+
+  const onSeen = async (id: string) => {
+    const res = await updateMessageStatusApi(id);
+
+    updateUnreadMessage()
+  };
+  
 
   useEffect(() => {
     scrollToBottom();
@@ -76,9 +81,12 @@ const ChatPanel = () => {
           {messages.map((data, i) => (
             <ChatBubble
               key={i}
+              id={data._id}
               createdAt={data.createdAt}
               message={data.message}
               isSender={user?._id === data.senderId}
+              onSeen={onSeen}
+              isRead={data.isRead ?? false}
             />
           ))}
           {/* Auto-scroll target */}
