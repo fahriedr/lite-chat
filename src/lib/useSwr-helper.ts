@@ -31,7 +31,7 @@ export const swrFetcher = async (props: FetchProps) => {
 
     } catch (error: any) {
 
-        if(error.status === 401) {
+        if(error.response.status === 401) {
             Cookies.remove('user');
             Cookies.remove('token');
             redirect('/login')
