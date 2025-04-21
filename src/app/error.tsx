@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { XCircle, Home } from "lucide-react";
+import React from 'react';
+import Link from 'next/link';
+import { XCircle, Home } from 'lucide-react';
 
-const ErrorPage =  ({
-  reset,
-}: {
+type ErrorProps = {
+  error: Error;
   reset: () => void;
-}) => {
+};
+
+export default function Error({ error, reset }: ErrorProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-main-color px-4 py-8">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-8 text-center">
@@ -18,7 +19,9 @@ const ErrorPage =  ({
           Oops! Something went wrong
         </h1>
 
-        <p className="text-gray-600 mb-6">We encountered an unexpected error</p>
+        <p className="text-gray-600 mb-6">
+          {error?.message || 'We encountered an unexpected error'}
+        </p>
 
         <div className="flex justify-center space-x-4">
           <button
@@ -50,5 +53,3 @@ const ErrorPage =  ({
     </div>
   );
 }
-
-export default ErrorPage
