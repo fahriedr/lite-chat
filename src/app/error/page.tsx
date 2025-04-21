@@ -4,11 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { XCircle, Home } from "lucide-react";
 
-export default function ErrorPage({
+const ErrorPage =  ({
   reset,
 }: {
   reset: () => void;
-}) {
+}) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-main-color px-4 py-8">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-8 text-center">
@@ -50,3 +50,5 @@ export default function ErrorPage({
     </div>
   );
 }
+
+export default ErrorPage
