@@ -42,16 +42,18 @@ const LoginCard = ({ }: Props) => {
       }
     })
 
+    console.log(res, 'res')
+
     if (res?.success === false) {
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
       return
     }
 
-    Cookies.set('token', res?.data.token)
-    Cookies.set('user', JSON.stringify(res?.data.data))
+    // Cookies.set('token', res?.data.token)
+    // Cookies.set('user', JSON.stringify(res?.data.data))
 
-    router.push('/home')
+    // router.push('/home')
 
   }
 

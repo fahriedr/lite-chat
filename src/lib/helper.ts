@@ -60,7 +60,7 @@ export const fetchApi = async (props: FetchProps) => {
             headers: headers
         })
 
-        const response: CustomResponse = {
+        const response: CustomResponse | CustomError = {
             message: res.data.message,
             success: true,
             data: res.data

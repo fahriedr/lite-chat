@@ -38,8 +38,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             { email: body.email }
         ]}).exec()
 
-        console.log(body, 'body')
-
         if(user) {
             console.log(user, 'user')
             return CustomErrorResponse('Username or email already exists', 400)
@@ -53,7 +51,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             avatar: process.env.ROBOHASH_URL + body.username
         })
 
-        const token = await jwt.sign({
+        const token = jwt.sign({
             _id : data._id 
         },process.env.SECRET_KEY!,{
             expiresIn: "1h"

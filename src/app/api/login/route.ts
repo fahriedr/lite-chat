@@ -35,10 +35,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     );
 
     if (!validatePassword) {
-      return NextResponse.json(
-        { success: false, message: "Password incorrect" },
-        { status: 404 }
-      );
+      return CustomErrorResponse("Email or password is incorrect.", 401)
     }
 
     const token = await jwt.sign(
