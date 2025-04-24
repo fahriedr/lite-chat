@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from 'zod'
+import { custom, z } from 'zod'
 import {connectToDatabase} from '@/lib/database'
 import User from '@/models/User'
-import { hashPassword } from "@/lib/helper";
+import { CustomErrorResponse, CustomSuccessResponse, hashPassword } from "@/lib/helper";
 import jwt from 'jsonwebtoken'
+import { zodErrorResponse } from "@/lib/helper";
 
 const schema = z.object({
     fullname: z.string().min(6).max(30),
     username: z.string().min(6).max(12).trim(),
     email: z.string().email(),
-    password: z.string().min(6).max(30),
-    confirmPassword: z.string().max(30)
+    password: z.string().min(6),
+    confirmPassword: z.string()
 }).superRefine(({confirmPassword, password}, ctx) => {
     if(confirmPassword !== password) {
         ctx.addIssue({
@@ -29,7 +30,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         const validate = schema.safeParse(body)
 
         if(!validate.success){
-            return NextResponse.json(validate.error.format(), {status: 400})
+            return zodErrorResponse(validate.error)
         }
 
         const user = await User.findOne({ $or: [
@@ -37,8 +38,11 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             { email: body.email }
         ]}).exec()
 
+        console.log(body, 'body')
+
         if(user) {
-            return NextResponse.json("Username or email already exists", { status: 400 })
+            console.log(user, 'user')
+            return CustomErrorResponse('Username or email already exists', 400)
         }
 
         let data = await User.create({
@@ -63,13 +67,14 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             avatar: data.avatar,
         }
 
-        return NextResponse.json({
-            data: res,
-            token : token,
-            success: true
-        })
+        return CustomSuccessResponse('Success', 200, 
+            {
+                user: res,
+                token: token
+            }
+        )
     } catch (error) {
         console.log(error)
-        return new NextResponse("Something went wrong " + error, { status: 500 })
+        return CustomErrorResponse('Something went wrong', 500)
     }
 }

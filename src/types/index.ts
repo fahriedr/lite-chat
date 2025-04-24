@@ -74,3 +74,16 @@ export type NextApiResponseServerIo = NextApiResponse & {
         }
     }
 }
+
+export interface ErrorDetails {
+    field: string | number
+    code: string
+    message: string
+}
+
+export interface CustomError {
+    success: boolean
+    statusCode: number
+    message: string
+    details?: ErrorDetails[]
+}

@@ -1,10 +1,12 @@
 // 'use server'
-import { CustomResponse } from '@/types'
+import { CustomResponse, CustomError, ErrorDetails } from '@/types'
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
 import moment from 'moment'
 import { redirect } from 'next/navigation'
+import { NextResponse } from 'next/server'
+import { ZodIssue } from 'zod'
 
 interface FetchProps {
     url: string,
@@ -112,4 +114,43 @@ export const logout = async () => {
 
 export const getPlainId = async (id: Object) => {
     return id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+}
+
+export const zodErrorResponse = async (err: Zod.ZodError) => {
+
+    let errorDetails: ErrorDetails[] = []
+
+    err.issues.map((val, i) => {
+
+        const data: ErrorDetails = {
+            field: val.path[0],
+            code: val.code,
+            message: val.message
+        }
+
+        errorDetails.push(data)
+    })
+
+    return CustomErrorResponse(errorDetails[0].message, 400, errorDetails)
+
+}
+
+export const CustomErrorResponse = (message: string, statusCode: number, errorDetail?: Array<ErrorDetails>) => {
+
+    const errorResponse: CustomError = {
+        success: false,
+        statusCode: statusCode,
+        message: message,
+        details: errorDetail
+    }
+
+    return NextResponse.json(errorResponse, {status: statusCode})
+}
+
+export const CustomSuccessResponse = (message: string, statusCode: number, data?: Array<[]> | object) => {
+    return NextResponse.json({
+        success: true,
+        message: message,
+        data: data
+    }, {status: statusCode})
 }
