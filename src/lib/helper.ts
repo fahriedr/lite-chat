@@ -7,6 +7,8 @@ import moment from 'moment'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { ZodIssue } from 'zod'
+import { Profile, Account} from "next-auth/core/types"
+import User from '@/models/User'
 
 interface FetchProps {
     url: string,
@@ -153,4 +155,35 @@ export const CustomSuccessResponse = (message: string, statusCode: number, data?
         message: message,
         data: data
     }, {status: statusCode})
+}
+
+const emailToUsername = async (email: string) => {
+    const [localPart] = email.split('@')
+    const randomDigits = Math.floor(1000 + Math.random() * 9000)
+    return `${localPart}${randomDigits}`
+}
+
+export const googleAuth = async (account: Account, profile: Profile | undefined) => {
+
+    if (!profile?.email) {
+        throw new Error("No Profile")
+    }
+
+    const user = await User.findOne({
+        email: profile.email
+    }).exec()
+
+    if (!user) {
+        const username = await emailToUsername(profile.email)
+        let data = await User.create({
+            fullname: profile.name,
+            username: username,
+            email: profile.email,
+            password: '',
+            avatar: process.env.ROBOHASH_URL + username
+        })
+
+    } else {
+
+    }
 }
