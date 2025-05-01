@@ -169,21 +169,23 @@ export const googleAuth = async (account: Account, profile: Profile | undefined)
         throw new Error("No Profile")
     }
 
-    const user = await User.findOne({
-        email: profile.email
-    }).exec()
+    console.log(profile)
 
-    if (!user) {
-        const username = await emailToUsername(profile.email)
-        let data = await User.create({
-            fullname: profile.name,
-            username: username,
-            email: profile.email,
-            password: '',
-            avatar: process.env.ROBOHASH_URL + username
-        })
+    // const user = await User.findOne({
+    //     email: profile.email
+    // }).exec()
 
-    } else {
+    // if (!user) {
+    //     const username = await emailToUsername(profile.email)
+    //     let data = await User.create({
+    //         fullname: profile.name,
+    //         username: username,
+    //         email: profile.email,
+    //         password: '',
+    //         avatar: process.env.ROBOHASH_URL + username
+    //     })
 
-    }
+    // } else {
+
+    // }
 }

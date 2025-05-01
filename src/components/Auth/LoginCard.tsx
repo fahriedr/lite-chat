@@ -12,6 +12,7 @@ import { redirect, useRouter } from "next/navigation";
 import Head from "next/head";
 import { useUserStore } from "@/store/user";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 interface Props {
 
@@ -49,11 +50,6 @@ const LoginCard = ({ }: Props) => {
       setLoading(false)
       return
     }
-
-    // Cookies.set('token', res?.data.token)
-    // Cookies.set('user', JSON.stringify(res?.data.data))
-
-    // router.push('/home')
 
   }
 
@@ -157,6 +153,10 @@ const LoginCard = ({ }: Props) => {
                 {' '}Sign up
               </Link>
             </p>
+          </div>
+          <div>
+            <h1>Sign In</h1>
+            <button onClick={() => signIn("google")}>Sign in with Google</button>
           </div>
         </div>
       </div>
