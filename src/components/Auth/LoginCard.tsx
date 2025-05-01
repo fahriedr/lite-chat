@@ -12,7 +12,7 @@ import { redirect, useRouter } from "next/navigation";
 import Head from "next/head";
 import { useUserStore } from "@/store/user";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 interface Props {
 
@@ -155,8 +155,10 @@ const LoginCard = ({ }: Props) => {
             </p>
           </div>
           <div>
-            <h1>Sign In</h1>
-            <button onClick={() => signIn("google")}>Sign in with Google</button>
+            <button onClick={() => signIn("google")} className="text-lg text-green-800">Sign in with Google</button>
+          </div>
+          <div>
+            <button onClick={() => signOut()} className="text-lg text-green-800">Sign Out</button>
           </div>
         </div>
       </div>

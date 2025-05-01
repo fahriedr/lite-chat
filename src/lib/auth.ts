@@ -7,23 +7,24 @@ import { googleAuth } from "@/lib/helper"
 
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
-  session:{
-    strategy: 'jwt'
-  },
+  // session:{
+  //   strategy: 'jwt'
+  // },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  callbacks: {
-    async signIn ({ user, account, profile }: { user: User | AdapterUser , account: Account | null, profile?: Profile | undefined}) {
+  // callbacks: {
+  //   async signIn ({ user, account, profile }: { user: User | AdapterUser , account: Account | null, profile?: Profile | undefined}) {
      
-        if(account?.provider === "google") {
-            // googleAuth(account, profile)
-        }
+  //       if(account?.provider === "google") {
+  //           googleAuth(account, profile)
+  //           console.log(account, 'acc')
+  //       }
         
-        return true
-    }
-  }
+  //       return true
+  //   }
+  // }
 }
