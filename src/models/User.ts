@@ -1,13 +1,15 @@
 import mongoose, { Schema, Document, models, model } from "mongoose";
 
+export type AuthProvider = 'google' | 'github' | 'local'
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId;
     fullname: string;
     email: string;
     username: string,
     avatar: string,
-    password: string
-  }
+    password?: string,
+    provider: AuthProvider
+}
 
 const UserSchema = new Schema<IUser>({
     fullname: { type: String, required: true },
@@ -15,6 +17,10 @@ const UserSchema = new Schema<IUser>({
     password: { type: String, required: true, select: false },
     email: { type: String, required: true, unique: true},
     avatar: { type: String },
+    provider: { 
+        type: String, 
+        enum: ['google', 'github', 'local'], 
+        default: 'local' }
 }, {
     timestamps: true
 })

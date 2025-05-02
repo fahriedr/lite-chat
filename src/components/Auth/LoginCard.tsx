@@ -12,13 +12,21 @@ import { redirect, useRouter } from "next/navigation";
 import Head from "next/head";
 import { useUserStore } from "@/store/user";
 import Link from "next/link";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import GoogleSignInButton from "../UI/ProvideLoginButton";
+import ProviderLoginButton from "../UI/ProvideLoginButton";
+import { GoogleIcon } from "@/icons/Google";
+import { GithubIcon } from "lucide-react";
 
 interface Props {
 
 }
 
 const LoginCard = ({ }: Props) => {
+
+  const {data} = useSession()
+
+  console.log(data?.user, 'data')
 
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -120,7 +128,7 @@ const LoginCard = ({ }: Props) => {
               />
             </div>
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 id="remember-me"
                 name="remember-me"
@@ -130,7 +138,7 @@ const LoginCard = ({ }: Props) => {
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                 Remember me
               </label>
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -146,6 +154,30 @@ const LoginCard = ({ }: Props) => {
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
+
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-sm text-gray-500">Or continue with</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <div className="flex flex-row gap-x-4">
+            <ProviderLoginButton
+              icon={<GoogleIcon size={6}/>}
+              name="Google"
+              onClick={() => signIn("google")}
+            />
+            <ProviderLoginButton
+              icon={<GithubIcon size={24}/>}
+              name="Github"
+              onClick={() => signIn("github")}
+            />
+          </div>
+
+          <button onClick={() => signOut()} className="bg-red-500">
+            Logout
+          </button>
+
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               {"Dont have an account?"}
@@ -153,12 +185,6 @@ const LoginCard = ({ }: Props) => {
                 {' '}Sign up
               </Link>
             </p>
-          </div>
-          <div>
-            <button onClick={() => signIn("google")} className="text-lg text-green-800">Sign in with Google</button>
-          </div>
-          <div>
-            <button onClick={() => signOut()} className="text-lg text-green-800">Sign Out</button>
           </div>
         </div>
       </div>
