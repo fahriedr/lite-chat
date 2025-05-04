@@ -7,7 +7,7 @@ declare global {
   };
 }
 
-const MONGODB_URI = process.env.MONGO_URL!;
+const MONGODB_URI = "mongodb+srv://cuirass-admin:sXEdhc5sXXbsk87R@cuirass-app.nxapkrc.mongodb.net/lite-chat?retryWrites=true&w=majority" //process.env.MONGO_URL!;
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGO_URL environment variable.");

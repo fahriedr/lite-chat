@@ -13,11 +13,10 @@ import Head from "next/head";
 import { useUserStore } from "@/store/user";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import GoogleSignInButton from "../UI/ProvideLoginButton";
 import ProviderLoginButton from "../UI/ProvideLoginButton";
 import { GoogleIcon } from "@/icons/Google";
 import { GithubIcon } from "lucide-react";
-
+import { setCookies } from "@/lib/helper"
 interface Props {
 
 }
@@ -51,13 +50,15 @@ const LoginCard = ({ }: Props) => {
       }
     })
 
-    console.log(res, 'res')
-
     if (res?.success === false) {
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
       return
     }
+
+    await setCookies(res?.data.data.token, res?.data.data.user)
+
+    router.push('/home')
 
   }
 
@@ -165,12 +166,13 @@ const LoginCard = ({ }: Props) => {
             <ProviderLoginButton
               icon={<GoogleIcon size={6}/>}
               name="Google"
-              onClick={() => signIn("google")}
+              onClick={() => signIn("google", { callbackUrl: "/api/auth/callback/google" })}
             />
+
             <ProviderLoginButton
               icon={<GithubIcon size={24}/>}
               name="Github"
-              onClick={() => signIn("github")}
+              onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
             />
           </div>
 

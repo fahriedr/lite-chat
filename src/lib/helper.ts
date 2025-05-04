@@ -1,5 +1,4 @@
-// 'use server'
-import { CustomResponse, CustomError, ErrorDetails } from '@/types'
+import { CustomResponse, CustomError, ErrorDetails, User as UserType } from '@/types'
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
@@ -7,8 +6,11 @@ import moment from 'moment'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { ZodIssue } from 'zod'
-import { Profile, Account} from "next-auth/core/types"
+import { Profile, Account} from "next-auth"
 import User from '@/models/User'
+import jwt from 'jsonwebtoken'
+import { connectToDatabase } from './database'
+import { cookies } from 'next/headers'
 
 interface FetchProps {
     url: string,
@@ -157,6 +159,11 @@ export const CustomSuccessResponse = (message: string, statusCode: number, data?
     }, {status: statusCode})
 }
 
+export const setCookies = async (token: string, user: UserType) => {
+    Cookies.set('token', token)
+    Cookies.set('user', JSON.stringify(user))
+}
+
 const emailToUsername = async (email: string) => {
     const [localPart] = email.split('@')
     const randomDigits = Math.floor(1000 + Math.random() * 9000)
@@ -165,27 +172,89 @@ const emailToUsername = async (email: string) => {
 
 export const googleAuth = async (account: Account, profile: Profile | undefined) => {
 
-    if (!profile?.email) {
-        throw new Error("No Profile")
-    }
-
-    console.log(profile, 'googleAuth')
-
-    const user = await User.findOne({
-        email: profile.email
-    }).exec()
-
-    if (!user) {
-        const username = await emailToUsername(profile.email)
-        let data = await User.create({
-            fullname: profile.name,
-            username: username,
+    try {
+        if (!profile?.email) {
+            throw new Error("No Profile")
+        }
+    
+        console.log(profile, 'googleAuth')
+    
+        await connectToDatabase();
+    
+        const user = await User.findOne({
             email: profile.email,
-            password: '',
-            avatar: process.env.ROBOHASH_URL + username
-        })
+            provider: "google"
+        }).exec()
+    
+        // if (!user) {
+        //     const username = await emailToUsername(profile.email)
+        //     let data = await User.create({
+        //         fullname: profile.name,
+        //         username: username,
+        //         email: profile.email,
+        //         password: await hashPassword(username),
+        //         avatar: process.env.ROBOHASH_URL + username,
+        //         provider: 'google'
+        //     })
+    
+        //     const token = jwt.sign({
+        //         _id : data._id 
+        //     },process.env.SECRET_KEY!,{
+        //         expiresIn: "1h"
+        //     })
+    
+        //     const res = {
+        //         _id: data._id.toString(),
+        //         fullname: data.fullname,
+        //         username: data.username,
+        //         email: data.email,
+        //         avatar: data.avatar,
+        //     }
+    
+        //     await setCookies(token, res)
+    
+        //     return CustomSuccessResponse('Success', 200, 
+        //         {
+        //             user: res,
+        //             token: token
+        //         }
+        //     )
+        // }
 
-    } else {
+        let token
+        let data
+    
+        if (user && user.provider === "google") {
+    
+            console.log(user, 'google')
+    
+             token = await jwt.sign(
+                {
+                _id: user._id,
+                },
+                process.env.SECRET_KEY!,
+                {
+                expiresIn: 60 * 60,
+                }
+            );
+        
+            data = {
+                _id: user._id.toString(),
+                fullname: user.fullname,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+            }
+    
+            await setCookies(token, data)
+            console.log(checkAuth(), 'checkout')
+    
+    
+        }
 
+        return {token: token, user: data}
+
+    } catch (error) {
+        throw error
     }
 }
