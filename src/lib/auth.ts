@@ -1,9 +1,11 @@
-import { NextAuthOptions, Account, Profile, User } from "next-auth"
+import { NextAuthOptions, Account, Profile } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
-import { AdapterUser } from "next-auth/adapters"
-import { googleAuth } from "@/lib/helper"
 import { cookies } from 'next/headers';
+import { connectToDatabase } from "./database"
+import UserModel from "@/models/User"
+import jwt from 'jsonwebtoken'
+import { emailToUsername, hashPassword } from "./helper";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,28 +20,102 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({
-      user,
       account,
       profile,
     }: {
-      user: User | AdapterUser
       account: Account | null
       profile?: Profile
     }) {
-      if (account?.provider === "google") {
-        const data = await googleAuth(account, profile)
-        cookies().set('token', data.token as string)
-        cookies().set('user',JSON.stringify( data.user))
-      } else if(account?.provider === "github"){
-        console.log(account, 'acc git')
-      }
+      const auth = await authWithProvider(profile, account?.provider ?? 'local')
 
-      console.log(account, 'acco')
-        
+      if (!auth) return false
+
       return true
     },
     async redirect({ url, baseUrl }) {
       return `${baseUrl}/home`
     },
   },
+}
+
+const authWithProvider = async (profile: Profile | undefined, provider: string) => {
+
+  try {
+    if (!profile?.email) {
+      return false
+    }
+
+    if (provider === 'local') {
+      return false
+    }
+
+    await connectToDatabase();
+
+    const user = await UserModel.findOne({
+      email: profile.email,
+      provider: provider
+    }).exec()
+
+    if (!user) {
+      const username = await emailToUsername(profile.email)
+
+      let user = await UserModel.create({
+        fullname: profile.name,
+        username: username,
+        email: profile.email,
+        password: await hashPassword(username),
+        avatar: process.env.ROBOHASH_URL + username,
+        provider: provider
+      })
+
+      const token = jwt.sign({
+        _id: user._id
+      }, process.env.SECRET_KEY!, {
+        expiresIn: "1h"
+      })
+
+      const data = {
+        _id: user._id.toString(),
+        fullname: user.fullname,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      }
+
+      cookies().set('token', token as string)
+      cookies().set('user', JSON.stringify(data))
+
+    } else if (user) {
+
+      if (user.provider === provider) {
+        const token = await jwt.sign(
+          {
+            _id: user._id,
+          },
+          process.env.SECRET_KEY!,
+          {
+            expiresIn: 60 * 60,
+          }
+        );
+  
+        const data = {
+          _id: user._id.toString(),
+          fullname: user.fullname,
+          username: user.username,
+          email: user.email,
+          avatar: user.avatar,
+        }
+  
+        cookies().set('token', token as string)
+        cookies().set('user', JSON.stringify(data))
+      } else {
+        return false
+      }
+    }
+
+    return true
+
+  } catch (error) {
+    throw new Error(JSON.stringify(error))
+  }
 }

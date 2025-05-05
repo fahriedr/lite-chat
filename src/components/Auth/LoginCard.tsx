@@ -1,18 +1,10 @@
 'use client';
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import Button from "@/components/UI/Button";
-import Container from "@/components/UI/Container";
-import TextInput from "@/components/UI/TextInput";
-import loginImage from "../../public/images/login.png";
+import React, { useState } from "react";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie'
-import { redirect, useRouter } from "next/navigation";
-import Head from "next/head";
-import { useUserStore } from "@/store/user";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import ProviderLoginButton from "../UI/ProvideLoginButton";
 import { GoogleIcon } from "@/icons/Google";
 import { GithubIcon } from "lucide-react";
@@ -24,8 +16,6 @@ interface Props {
 const LoginCard = ({ }: Props) => {
 
   const {data} = useSession()
-
-  console.log(data?.user, 'data')
 
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -175,10 +165,6 @@ const LoginCard = ({ }: Props) => {
               onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
             />
           </div>
-
-          <button onClick={() => signOut()} className="bg-red-500">
-            Logout
-          </button>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">

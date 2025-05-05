@@ -15,6 +15,7 @@ import Tooltip from "../UI/Tooltip";
 import { FetchProps, swrFetcher } from "@/lib/useSwr-helper";
 import useSWR from "swr";
 import { motion, AnimatePresence } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 const SidePanel = () => {
 
@@ -71,9 +72,10 @@ const SidePanel = () => {
   const logoutClick = async () => {
     const res = await logout();
     if (res) {
-      resetUser();
-      resetConversation();
-      router.push("/login");
+      resetUser()
+      resetConversation()
+      signOut()
+      router.push("/login")
     }
   };
 

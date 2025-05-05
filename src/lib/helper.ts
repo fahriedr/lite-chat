@@ -164,7 +164,7 @@ export const setCookies = async (token: string, user: UserType) => {
     Cookies.set('user', JSON.stringify(user))
 }
 
-const emailToUsername = async (email: string) => {
+export const emailToUsername = async (email: string) => {
     const [localPart] = email.split('@')
     const randomDigits = Math.floor(1000 + Math.random() * 9000)
     return `${localPart}${randomDigits}`
