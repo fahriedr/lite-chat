@@ -1,14 +1,15 @@
 'use client';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import ProviderLoginButton from "../UI/ProvideLoginButton";
 import { GoogleIcon } from "@/icons/Google";
 import { GithubIcon } from "lucide-react";
 import { setCookies } from "@/lib/helper"
+import { ErrorAuthProvider, ErrorAuthProviderMessages } from "@/types";
 interface Props {
 
 }
@@ -16,6 +17,25 @@ interface Props {
 const LoginCard = ({ }: Props) => {
 
   const {data} = useSession()
+
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+
+  const getErrorMessage = (code: string | null) => {
+    switch (code) {
+      case ErrorAuthProvider.AUTHENTICATION_FAILED:
+        toast.error(ErrorAuthProviderMessages[ErrorAuthProvider.AUTHENTICATION_FAILED])
+        return
+      case ErrorAuthProvider.SERVER:
+        toast.error(ErrorAuthProviderMessages[ErrorAuthProvider.SERVER])
+        return 
+      case ErrorAuthProvider.PROVIDER_MISMATCH:
+        toast.error(ErrorAuthProvider.PROVIDER_MISMATCH)
+        return 
+      default:
+        return null
+    }
+  }
 
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -52,8 +72,14 @@ const LoginCard = ({ }: Props) => {
 
   }
 
+  useEffect(() => {
+    getErrorMessage(error)
+  }, [error])
+
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
+      {/* {error && <p className="text-red-500">{getErrorMessage(error)}</p>} */}
+
       {/* Left panel with illustration/brand */}
       <div className="hidden lg:flex lg:w-1/2 bg-main-color flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md">
@@ -165,6 +191,10 @@ const LoginCard = ({ }: Props) => {
               onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
             />
           </div>
+
+          <button className="bg-teal" onClick={() => signOut()}>
+            Logout
+          </button>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">

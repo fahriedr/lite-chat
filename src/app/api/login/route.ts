@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     const validatePassword = await comparePassword(
       body.password,
-      checkUser.password
+      checkUser.password as string
     );
 
     if (!validatePassword) {

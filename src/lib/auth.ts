@@ -6,6 +6,21 @@ import { connectToDatabase } from "./database"
 import UserModel from "@/models/User"
 import jwt from 'jsonwebtoken'
 import { emailToUsername, hashPassword } from "./helper";
+import { ErrorAuthProvider, User } from "@/types";
+
+type ProviderKey = 'google_id' | 'github_id';
+
+type UserCreateInput = {
+  fullname?: string;
+  username: string;
+  email: string;
+  password: string | null;
+  avatar: string;
+  provider: string | null;
+  email_verified: boolean;
+  [key: `${string}_id`]: string | boolean | undefined; 
+};
+
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -26,96 +41,96 @@ export const authOptions: NextAuthOptions = {
       account: Account | null
       profile?: Profile
     }) {
-      const auth = await authWithProvider(profile, account?.provider ?? 'local')
+      try {
 
-      if (!auth) return false
+        console.log(account, 'account')
+        console.log(profile, 'account')
+        const auth = await authWithProvider(profile, account)
 
-      return true
+        if (typeof auth === 'string') {
+          throw new Error(auth)
+        }
+
+        return true
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'server-error'
+        throw new Error(errorMessage)
+      }
     },
     async redirect({ url, baseUrl }) {
       return `${baseUrl}/home`
     },
   },
+  pages: {
+    error: '/login',
+    signIn: '/login',
+  },
 }
 
-const authWithProvider = async (profile: Profile | undefined, provider: string) => {
+const authWithProvider = async (profile: Profile | undefined, account: Account | null): Promise<string | boolean> => {
 
   try {
     if (!profile?.email) {
-      return false
-    }
-
-    if (provider === 'local') {
-      return false
+      return ErrorAuthProvider.INVALID_PROFILE
     }
 
     await connectToDatabase();
 
     const user = await UserModel.findOne({
-      email: profile.email,
-      provider: provider
+      email: profile.email
     }).exec()
 
+    const providerKey = `${account?.provider}_id` as ProviderKey;
+
     if (!user) {
+      
       const username = await emailToUsername(profile.email)
 
-      let user = await UserModel.create({
+      const userData: UserCreateInput = {
         fullname: profile.name,
         username: username,
         email: profile.email,
-        password: await hashPassword(username),
+        password: null,
         avatar: process.env.ROBOHASH_URL + username,
-        provider: provider
-      })
-
-      const token = jwt.sign({
-        _id: user._id
-      }, process.env.SECRET_KEY!, {
-        expiresIn: "1h"
-      })
-
-      const data = {
-        _id: user._id.toString(),
-        fullname: user.fullname,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
+        provider: account?.provider ?? null,
+        email_verified: true,
       }
 
-      cookies().set('token', token as string)
-      cookies().set('user', JSON.stringify(data))
+      userData[providerKey] = account?.providerAccountId
 
-    } else if (user) {
+      let user = await UserModel.create(userData)
 
-      if (user.provider === provider) {
-        const token = await jwt.sign(
-          {
-            _id: user._id,
-          },
-          process.env.SECRET_KEY!,
-          {
-            expiresIn: 60 * 60,
-          }
-        );
+      setAuthCookies(user)
+
+    } else {
+      if (!user[providerKey]) {
+        user[providerKey] = account?.providerAccountId!;
+        user.email_verified = true
+        await user.save();
+
+        setAuthCookies(user)
   
-        const data = {
-          _id: user._id.toString(),
-          fullname: user.fullname,
-          username: user.username,
-          email: user.email,
-          avatar: user.avatar,
-        }
-  
-        cookies().set('token', token as string)
-        cookies().set('user', JSON.stringify(data))
       } else {
-        return false
+        setAuthCookies(user)
       }
     }
 
     return true
 
   } catch (error) {
-    throw new Error(JSON.stringify(error))
+    console.log(error)
+    return ErrorAuthProvider.SERVER
   }
 }
+
+const setAuthCookies = (user: any) => {
+  const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY!, { expiresIn: "1h" });
+  cookies().set('token', token);
+  cookies().set('user', JSON.stringify({
+    _id: user._id.toString(),
+    fullname: user.fullname,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+  }));
+};

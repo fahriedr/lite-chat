@@ -87,3 +87,19 @@ export interface CustomError {
     message: string
     details?: ErrorDetails[]
 }
+
+export enum ErrorAuthProvider {
+    USER_MISMATCH = "user-mismatch",
+    PROVIDER_MISMATCH = "provider-mismatch",
+    AUTHENTICATION_FAILED = "authentication-failed",
+    INVALID_PROFILE = "invalid-profile",
+    SERVER = 'server-error'
+}
+
+export const ErrorAuthProviderMessages: Record<ErrorAuthProvider, string> = {
+    [ErrorAuthProvider.USER_MISMATCH]: "The user account does not match the authentication provider.",
+    [ErrorAuthProvider.PROVIDER_MISMATCH]: "The selected provider does not match. Try with other provider.",
+    [ErrorAuthProvider.AUTHENTICATION_FAILED]: "Authentication failed. Please try again.",
+    [ErrorAuthProvider.INVALID_PROFILE]: "The user profile is invalid or incomplete.",
+    [ErrorAuthProvider.SERVER]: "A server error occurred. Please try again later."
+};
