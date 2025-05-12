@@ -4,6 +4,7 @@ import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import jwt from 'jsonwebtoken'
+import { redirect } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email(),
@@ -24,6 +25,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     const checkUser = await User.findOne({ email: body.email })
       .select("+password")
       .exec();
+
+    if(checkUser && checkUser.password === null) {
+      return NextResponse.redirect(
+        new URL(`/api/auth/signin/${checkUser.provider}?callbackUrl=/home`, req.url)
+      );
+    }
 
     if (!checkUser) {
       return CustomErrorResponse("User not found", 404)

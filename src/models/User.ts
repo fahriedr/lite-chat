@@ -13,7 +13,7 @@ export interface IUser extends Document {
     github_id?: string,
     access_token?: string,
     provider: AuthProvider,
-    is_active: boolean
+    is_active: boolean,
 }
 
 const UserSchema = new Schema<IUser>({

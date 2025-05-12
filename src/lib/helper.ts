@@ -61,13 +61,19 @@ export const fetchApi = async (props: FetchProps) => {
             url: props.url,
             method: props.method,
             data: data,
-            headers: headers
+            headers: headers,
+            maxRedirects: 0,
+            validateStatus: function (status) {
+                return true;
+            }
         })
 
         const response: CustomResponse | CustomError = {
             message: res.data.message,
             success: true,
-            data: res.data
+            data: res.data,
+            status: res.status,
+            headers: res.headers
         }
 
         return response

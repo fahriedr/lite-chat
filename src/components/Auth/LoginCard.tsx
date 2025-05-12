@@ -60,10 +60,18 @@ const LoginCard = ({ }: Props) => {
       }
     })
 
+
     if (res?.success === false) {
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
       return
+    }
+
+
+    if (res?.status === 302) {
+      console.log('haii')
+      signIn();
+      return;
     }
 
     await setCookies(res?.data.data.token, res?.data.data.user)

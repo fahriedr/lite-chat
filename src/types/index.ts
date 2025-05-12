@@ -1,3 +1,4 @@
+import { AxiosResponseHeaders, RawAxiosResponseHeaders } from "axios";
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io"
@@ -16,7 +17,9 @@ export interface User {
 export interface CustomResponse {
     message: string,
     success: boolean,
-    data?: any
+    data?: any,
+    status?: number,
+    headers?: AxiosResponseHeaders | RawAxiosResponseHeaders
 }
 
 export interface Message {
