@@ -2,22 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import ProviderLoginButton from "../UI/ProvideLoginButton";
 import { GoogleIcon } from "@/icons/Google";
 import { GithubIcon } from "lucide-react";
 import { setCookies } from "@/lib/helper"
 import { ErrorAuthProvider, ErrorAuthProviderMessages } from "@/types";
 interface Props {
+  error?: string | null
 
 }
 
-const LoginCard = ({ }: Props) => {
-
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
+const LoginCard = ({ error = null }: Props) => {
 
   const getErrorMessage = (code: string | null) => {
     switch (code) {
