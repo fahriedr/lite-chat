@@ -62,10 +62,6 @@ export const fetchApi = async (props: FetchProps) => {
             method: props.method,
             data: data,
             headers: headers,
-            maxRedirects: 0,
-            validateStatus: function (status) {
-                return true;
-            }
         })
 
         const response: CustomResponse | CustomError = {
@@ -176,91 +172,6 @@ export const emailToUsername = async (email: string) => {
     return `${localPart}${randomDigits}`
 }
 
-export const googleAuth = async (account: Account, profile: Profile | undefined) => {
-
-    try {
-        if (!profile?.email) {
-            throw new Error("No Profile")
-        }
-    
-        console.log(profile, 'googleAuth')
-    
-        await connectToDatabase();
-    
-        const user = await User.findOne({
-            email: profile.email,
-            provider: "google"
-        }).exec()
-    
-        // if (!user) {
-        //     const username = await emailToUsername(profile.email)
-        //     let data = await User.create({
-        //         fullname: profile.name,
-        //         username: username,
-        //         email: profile.email,
-        //         password: await hashPassword(username),
-        //         avatar: process.env.ROBOHASH_URL + username,
-        //         provider: 'google'
-        //     })
-    
-        //     const token = jwt.sign({
-        //         _id : data._id 
-        //     },process.env.SECRET_KEY!,{
-        //         expiresIn: "1h"
-        //     })
-    
-        //     const res = {
-        //         _id: data._id.toString(),
-        //         fullname: data.fullname,
-        //         username: data.username,
-        //         email: data.email,
-        //         avatar: data.avatar,
-        //     }
-    
-        //     await setCookies(token, res)
-    
-        //     return CustomSuccessResponse('Success', 200, 
-        //         {
-        //             user: res,
-        //             token: token
-        //         }
-        //     )
-        // }
-
-        let token
-        let data
-    
-        if (user && user.provider === "google") {
-    
-            console.log(user, 'google')
-    
-             token = await jwt.sign(
-                {
-                _id: user._id,
-                },
-                process.env.SECRET_KEY!,
-                {
-                expiresIn: 60 * 60,
-                }
-            );
-        
-            data = {
-                _id: user._id.toString(),
-                fullname: user.fullname,
-                username: user.username,
-                email: user.email,
-                avatar: user.avatar,
-            }
-    
-            await setCookies(token, data)
-            console.log(checkAuth(), 'checkout')
-    
-    
-        }
-
-        return {token: token, user: data}
-
-    } catch (error) {
-        throw error
-    }
+export const capitalizeFirstLetter = (val: string) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }

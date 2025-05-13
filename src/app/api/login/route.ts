@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/database";
-import { comparePassword, CustomErrorResponse, CustomSuccessResponse, zodErrorResponse } from "@/lib/helper";
+import { capitalizeFirstLetter, comparePassword, CustomErrorResponse, CustomSuccessResponse, zodErrorResponse } from "@/lib/helper";
 import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -26,10 +26,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       .select("+password")
       .exec();
 
-    if(checkUser && checkUser.password === null) {
-      return NextResponse.redirect(
-        new URL(`/api/auth/signin/${checkUser.provider}?callbackUrl=/home`, req.url)
-      );
+    if (checkUser && checkUser.password === null) {
+      return CustomErrorResponse(`Sign in with  ${capitalizeFirstLetter(checkUser.provider ?? '')} to continue.`, 400)
     }
 
     if (!checkUser) {
@@ -63,7 +61,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       avatar: checkUser.avatar,
     }
 
-    return CustomSuccessResponse('Success', 200, 
+    return CustomSuccessResponse('Success', 200,
       {
         user: data,
         token: token

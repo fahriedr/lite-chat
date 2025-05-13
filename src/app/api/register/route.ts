@@ -55,8 +55,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             github_id: null
         })
 
-        console.log(data, 'data')
-
         const token = jwt.sign({
             _id : data._id 
         },process.env.SECRET_KEY!,{

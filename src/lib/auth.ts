@@ -42,9 +42,6 @@ export const authOptions: NextAuthOptions = {
       profile?: Profile
     }) {
       try {
-
-        console.log(account, 'account')
-        console.log(profile, 'account')
         const auth = await authWithProvider(profile, account)
 
         if (typeof auth === 'string') {

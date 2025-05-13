@@ -9,7 +9,7 @@ export default function Login() {
   const router = useRouter()
   React.useEffect(() => {
     const checkUser = async () => {
-      const user = await Cookies.get('user');
+      const user = Cookies.get('user');
       if (user) {
         router.push("/home");
       }

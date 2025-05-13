@@ -16,8 +16,6 @@ interface Props {
 
 const LoginCard = ({ }: Props) => {
 
-  const {data} = useSession()
-
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
 
@@ -67,13 +65,6 @@ const LoginCard = ({ }: Props) => {
       return
     }
 
-
-    if (res?.status === 302) {
-      console.log('haii')
-      signIn();
-      return;
-    }
-
     await setCookies(res?.data.data.token, res?.data.data.user)
 
     router.push('/home')
@@ -86,7 +77,7 @@ const LoginCard = ({ }: Props) => {
 
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
-      {/* {error && <p className="text-red-500">{getErrorMessage(error)}</p>} */}
+      {error && <p className="text-red-500">{getErrorMessage(error)}</p>}
 
       {/* Left panel with illustration/brand */}
       <div className="hidden lg:flex lg:w-1/2 bg-main-color flex-col items-center justify-center p-12 text-white">
@@ -199,10 +190,6 @@ const LoginCard = ({ }: Props) => {
               onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
             />
           </div>
-
-          <button className="bg-teal" onClick={() => signOut()}>
-            Logout
-          </button>
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
