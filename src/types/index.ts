@@ -1,3 +1,4 @@
+import { AxiosResponseHeaders, RawAxiosResponseHeaders } from "axios";
 import { Server as NetServer, Socket } from "net";
 import { NextApiResponse } from "next";
 import { Server as SocketIOServer } from "socket.io"
@@ -16,7 +17,9 @@ export interface User {
 export interface CustomResponse {
     message: string,
     success: boolean,
-    data?: any
+    data?: any,
+    status?: number,
+    headers?: AxiosResponseHeaders | RawAxiosResponseHeaders
 }
 
 export interface Message {
@@ -74,3 +77,32 @@ export type NextApiResponseServerIo = NextApiResponse & {
         }
     }
 }
+
+export interface ErrorDetails {
+    field: string | number
+    code: string
+    message: string
+}
+
+export interface CustomError {
+    success: boolean
+    statusCode: number
+    message: string
+    details?: ErrorDetails[]
+}
+
+export enum ErrorAuthProvider {
+    USER_MISMATCH = "user-mismatch",
+    PROVIDER_MISMATCH = "provider-mismatch",
+    AUTHENTICATION_FAILED = "authentication-failed",
+    INVALID_PROFILE = "invalid-profile",
+    SERVER = 'server-error'
+}
+
+export const ErrorAuthProviderMessages: Record<ErrorAuthProvider, string> = {
+    [ErrorAuthProvider.USER_MISMATCH]: "The user account does not match the authentication provider.",
+    [ErrorAuthProvider.PROVIDER_MISMATCH]: "The selected provider does not match. Try with other provider.",
+    [ErrorAuthProvider.AUTHENTICATION_FAILED]: "Authentication failed. Please try again.",
+    [ErrorAuthProvider.INVALID_PROFILE]: "The user profile is invalid or incomplete.",
+    [ErrorAuthProvider.SERVER]: "A server error occurred. Please try again later."
+};

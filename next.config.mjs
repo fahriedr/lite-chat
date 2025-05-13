@@ -21,6 +21,7 @@ const nextConfig = {
         ],
         minimumCacheTTL: 15000000,
     },
+    reactStrictMode: false
 };
 
 export default nextConfig;

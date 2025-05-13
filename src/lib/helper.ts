@@ -1,10 +1,16 @@
-// 'use server'
-import { CustomResponse } from '@/types'
+import { CustomResponse, CustomError, ErrorDetails, User as UserType } from '@/types'
 import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
 import moment from 'moment'
 import { redirect } from 'next/navigation'
+import { NextResponse } from 'next/server'
+import { ZodIssue } from 'zod'
+import { Profile, Account} from "next-auth"
+import User from '@/models/User'
+import jwt from 'jsonwebtoken'
+import { connectToDatabase } from './database'
+import { cookies } from 'next/headers'
 
 interface FetchProps {
     url: string,
@@ -55,13 +61,15 @@ export const fetchApi = async (props: FetchProps) => {
             url: props.url,
             method: props.method,
             data: data,
-            headers: headers
+            headers: headers,
         })
 
-        const response: CustomResponse = {
+        const response: CustomResponse | CustomError = {
             message: res.data.message,
             success: true,
-            data: res.data
+            data: res.data,
+            status: res.status,
+            headers: res.headers
         }
 
         return response
@@ -112,4 +120,58 @@ export const logout = async () => {
 
 export const getPlainId = async (id: Object) => {
     return id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+}
+
+export const zodErrorResponse = async (err: Zod.ZodError) => {
+
+    let errorDetails: ErrorDetails[] = []
+
+    err.issues.map((val, i) => {
+
+        const data: ErrorDetails = {
+            field: val.path[0],
+            code: val.code,
+            message: val.message
+        }
+
+        errorDetails.push(data)
+    })
+
+    return CustomErrorResponse(errorDetails[0].message, 400, errorDetails)
+
+}
+
+export const CustomErrorResponse = (message: string, statusCode: number, errorDetail?: Array<ErrorDetails>) => {
+
+    const errorResponse: CustomError = {
+        success: false,
+        statusCode: statusCode,
+        message: message,
+        details: errorDetail
+    }
+
+    return NextResponse.json(errorResponse, {status: statusCode})
+}
+
+export const CustomSuccessResponse = (message: string, statusCode: number, data?: Array<[]> | object) => {
+    return NextResponse.json({
+        success: true,
+        message: message,
+        data: data
+    }, {status: statusCode})
+}
+
+export const setCookies = async (token: string, user: UserType) => {
+    Cookies.set('token', token)
+    Cookies.set('user', JSON.stringify(user))
+}
+
+export const emailToUsername = async (email: string) => {
+    const [localPart] = email.split('@')
+    const randomDigits = Math.floor(1000 + Math.random() * 9000)
+    return `${localPart}${randomDigits}`
+}
+
+export const capitalizeFirstLetter = (val: string) => {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }

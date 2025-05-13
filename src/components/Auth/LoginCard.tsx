@@ -1,23 +1,39 @@
 'use client';
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Button from "@/components/UI/Button";
-import Container from "@/components/UI/Container";
-import TextInput from "@/components/UI/TextInput";
-import loginImage from "../../public/images/login.png";
 import { loginApi } from "@/utils/api/authApi";
 import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie'
-import { redirect, useRouter } from "next/navigation";
-import Head from "next/head";
-import { useUserStore } from "@/store/user";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-
+import { signIn, signOut, useSession } from "next-auth/react";
+import ProviderLoginButton from "../UI/ProvideLoginButton";
+import { GoogleIcon } from "@/icons/Google";
+import { GithubIcon } from "lucide-react";
+import { setCookies } from "@/lib/helper"
+import { ErrorAuthProvider, ErrorAuthProviderMessages } from "@/types";
 interface Props {
 
 }
 
 const LoginCard = ({ }: Props) => {
+
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+
+  const getErrorMessage = (code: string | null) => {
+    switch (code) {
+      case ErrorAuthProvider.AUTHENTICATION_FAILED:
+        toast.error(ErrorAuthProviderMessages[ErrorAuthProvider.AUTHENTICATION_FAILED])
+        return
+      case ErrorAuthProvider.SERVER:
+        toast.error(ErrorAuthProviderMessages[ErrorAuthProvider.SERVER])
+        return 
+      case ErrorAuthProvider.PROVIDER_MISMATCH:
+        toast.error(ErrorAuthProvider.PROVIDER_MISMATCH)
+        return 
+      default:
+        return null
+    }
+  }
 
   const [email, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -42,21 +58,27 @@ const LoginCard = ({ }: Props) => {
       }
     })
 
+
     if (res?.success === false) {
       toast.error(res.message ?? 'Something went wrong')
       setLoading(false)
       return
     }
 
-    Cookies.set('token', res?.data.token)
-    Cookies.set('user', JSON.stringify(res?.data.data))
+    await setCookies(res?.data.data.token, res?.data.data.user)
 
     router.push('/home')
 
   }
 
+  useEffect(() => {
+    getErrorMessage(error)
+  }, [error])
+
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
+      {error && <p className="text-red-500">{getErrorMessage(error)}</p>}
+
       {/* Left panel with illustration/brand */}
       <div className="hidden lg:flex lg:w-1/2 bg-main-color flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md">
@@ -122,7 +144,7 @@ const LoginCard = ({ }: Props) => {
               />
             </div>
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 id="remember-me"
                 name="remember-me"
@@ -132,7 +154,7 @@ const LoginCard = ({ }: Props) => {
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                 Remember me
               </label>
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -148,6 +170,27 @@ const LoginCard = ({ }: Props) => {
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
+
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-sm text-gray-500">Or continue with</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <div className="flex flex-row gap-x-4">
+            <ProviderLoginButton
+              icon={<GoogleIcon size={6}/>}
+              name="Google"
+              onClick={() => signIn("google", { callbackUrl: "/api/auth/callback/google" })}
+            />
+
+            <ProviderLoginButton
+              icon={<GithubIcon size={24}/>}
+              name="Github"
+              onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
+            />
+          </div>
+
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               {"Dont have an account?"}
