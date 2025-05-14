@@ -4,7 +4,6 @@ import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import jwt from 'jsonwebtoken'
-import { redirect } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email(),

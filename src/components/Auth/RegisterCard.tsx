@@ -5,8 +5,13 @@ import { registerApi } from "@/utils/api/authApi";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { z, ZodError, ZodFormattedError } from 'zod'
+import { z } from 'zod'
 import toast from "react-hot-toast";
+import ProviderLoginButton from "../UI/ProvideLoginButton";
+import { GoogleIcon } from "@/icons/Google";
+import { GithubIcon } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { setCookies } from "@/lib/helper";
 
 interface Props {
   
@@ -43,6 +48,8 @@ const RegisterCard = ({ }: Props) => {
 
   const handleSubmit = async () => {
 
+    setLoading(true)
+
     const data = {
       fullname: fullname,
       username: username,
@@ -69,9 +76,12 @@ const RegisterCard = ({ }: Props) => {
       } 
     })
 
-    Cookies.set('token', res?.data.token)
-
     setLoading(false)
+
+    await setCookies(res?.data.data.token, res?.data.data.user)
+    
+    router.push('/home')
+
 
   }
   return (
@@ -185,6 +195,26 @@ const RegisterCard = ({ }: Props) => {
             </button>
           </div>
 
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-sm text-gray-500">Or sign in with</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <div className="flex flex-row gap-x-4">
+            <ProviderLoginButton
+              icon={<GoogleIcon size={6}/>}
+              name="Google"
+              onClick={() => signIn("google", { callbackUrl: "/api/auth/callback/google" })}
+            />
+
+            <ProviderLoginButton
+              icon={<GithubIcon size={24}/>}
+              name="Github"
+              onClick={() => signIn("github", { callbackUrl: "/api/auth/callback/github" })}
+            />
+          </div>
+
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
@@ -193,6 +223,7 @@ const RegisterCard = ({ }: Props) => {
               </Link>
             </p>
           </div>
+
         </div>
       </div>
     </div>
