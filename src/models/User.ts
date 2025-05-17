@@ -23,8 +23,8 @@ const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true},
     avatar: { type: String },
     email_verified: { type: Boolean, default: false},
-    google_id: { type: String, unique: true, default: null},
-    github_id: { type: String, unique: true, default: null},
+    google_id: { type: String, unique: true, default: null, sparse: true},
+    github_id: { type: String, unique: true, default: null, sparse: true},
     provider: { 
         type: String, 
         enum: ['google', 'github'], 
