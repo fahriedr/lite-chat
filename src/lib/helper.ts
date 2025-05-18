@@ -1,16 +1,8 @@
 import { CustomResponse, CustomError, ErrorDetails, User as UserType } from '@/types'
-import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import bcrypt from 'bcryptjs'
 import Cookies from 'js-cookie'
-import moment from 'moment'
-import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
-import { ZodIssue } from 'zod'
-import { Profile, Account} from "next-auth"
-import User from '@/models/User'
-import jwt from 'jsonwebtoken'
-import { connectToDatabase } from './database'
-import { cookies } from 'next/headers'
 
 interface FetchProps {
     url: string,

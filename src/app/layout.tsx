@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import SessionWrapper from "@/components/Auth/SessionWrapper";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
-        <body className={'app-container'}>{children} <Toaster /></body>
+        <Suspense>
+          <body className={'app-container'}>{children} <Toaster /></body>
+        </Suspense>
       </html>
     </SessionWrapper>
   );

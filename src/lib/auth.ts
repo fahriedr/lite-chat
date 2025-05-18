@@ -5,8 +5,8 @@ import { cookies } from 'next/headers';
 import { connectToDatabase } from "./database"
 import UserModel from "@/models/User"
 import jwt from 'jsonwebtoken'
-import { emailToUsername, hashPassword } from "./helper";
-import { ErrorAuthProvider, User } from "@/types";
+import { emailToUsername } from "./helper";
+import { ErrorAuthProvider } from "@/types";
 
 type ProviderKey = 'google_id' | 'github_id';
 

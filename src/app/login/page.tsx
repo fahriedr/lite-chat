@@ -1,10 +1,13 @@
 "use client"
 import LoginCard from "@/components/Auth/LoginCard";
 import Cookies from "js-cookie";
-import {useRouter} from 'next/navigation'
+import {useRouter, useSearchParams} from 'next/navigation'
 import React from "react";
 
 export default function Login() {
+
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
 
   const router = useRouter()
   React.useEffect(() => {
@@ -21,7 +24,7 @@ export default function Login() {
     <>
       <main className="fixed-layout">
         <div className="app-container">
-          <LoginCard />
+          <LoginCard error={error}/>
         </div>
       </main>
     </>

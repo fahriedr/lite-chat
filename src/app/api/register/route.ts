@@ -39,7 +39,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         ]}).exec()
 
         if(user) {
-            console.log(user, 'user')
             return CustomErrorResponse('Username or email already exists', 400)
         }
 
