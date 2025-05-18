@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z, ZodError, ZodFormattedError } from 'zod'
 import toast from "react-hot-toast";
+import { setCookies } from "@/lib/helper";
 
 interface Props {
   
@@ -43,6 +44,8 @@ const RegisterCard = ({ }: Props) => {
 
   const handleSubmit = async () => {
 
+    setLoading(true)
+
     const data = {
       fullname: fullname,
       username: username,
@@ -69,7 +72,7 @@ const RegisterCard = ({ }: Props) => {
       } 
     })
 
-    Cookies.set('token', res?.data.token)
+    await setCookies(res?.data.data.token, res?.data.data.user)
 
     setLoading(false)
 
