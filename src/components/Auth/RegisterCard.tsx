@@ -8,6 +8,10 @@ import Link from "next/link";
 import { z } from 'zod'
 import toast from "react-hot-toast";
 import { setCookies } from "@/lib/helper";
+import ProviderLoginButton from "../UI/ProvideLoginButton";
+import { GoogleIcon } from "@/icons/Google";
+import { signIn } from "next-auth/react";
+import { GithubIcon } from "lucide-react";
 
 interface Props {
   
