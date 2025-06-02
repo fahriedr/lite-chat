@@ -7,13 +7,13 @@ export interface IUser extends Document {
     email: string,
     username: string,
     avatar: string,
-    email_verified: boolean,
+    isEmailVerified: boolean,
     password?: string | null,
-    google_id?: string,
-    github_id?: string,
+    googleId?: string,
+    githubId?: string,
     access_token?: string,
     provider: AuthProvider,
-    is_active: boolean,
+    isActive: boolean,
 }
 
 const UserSchema = new Schema<IUser>({
@@ -22,15 +22,15 @@ const UserSchema = new Schema<IUser>({
     password: { type: String, select: false },
     email: { type: String, required: true, unique: true},
     avatar: { type: String },
-    email_verified: { type: Boolean, default: false},
-    google_id: { type: String, unique: true, default: null},
-    github_id: { type: String, unique: true, default: null},
+    isEmailVerified: { type: Boolean, default: false},
+    googleId: { type: String, unique: true, default: null},
+    githubId: { type: String, unique: true, default: null},
     provider: { 
         type: String, 
         enum: ['google', 'github'], 
         default: null 
     },
-    is_active: { type: Boolean, default: true}
+    isActive: { type: Boolean, default: true}
 }, {
     timestamps: true
 })

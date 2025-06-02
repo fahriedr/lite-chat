@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken'
 import { emailToUsername } from "./helper";
 import { ErrorAuthProvider } from "@/types";
 
-type ProviderKey = 'google_id' | 'github_id';
+type ProviderKey = 'googleId' | 'githubId';
 
 type UserCreateInput = {
   fullname?: string;
@@ -17,8 +17,8 @@ type UserCreateInput = {
   password: string | null;
   avatar: string;
   provider: string | null;
-  email_verified: boolean;
-  [key: `${string}_id`]: string | boolean | undefined; 
+  isEmailVerified: boolean;
+  [key: `${string}Id`]: string | boolean | undefined; 
 };
 
 
@@ -77,7 +77,7 @@ const authWithProvider = async (profile: Profile | undefined, account: Account |
       email: profile.email
     }).exec()
 
-    const providerKey = `${account?.provider}_id` as ProviderKey;
+    const providerKey = `${account?.provider}Id` as ProviderKey;
 
     if (!user) {
       
@@ -90,7 +90,7 @@ const authWithProvider = async (profile: Profile | undefined, account: Account |
         password: null,
         avatar: process.env.ROBOHASH_URL + username,
         provider: account?.provider ?? null,
-        email_verified: true,
+        isEmailVerified: true,
       }
 
       userData[providerKey] = account?.providerAccountId
@@ -102,7 +102,7 @@ const authWithProvider = async (profile: Profile | undefined, account: Account |
     } else {
       if (!user[providerKey]) {
         user[providerKey] = account?.providerAccountId!;
-        user.email_verified = true
+        user.isEmailVerified = true
         await user.save();
 
         setAuthCookies(user)
