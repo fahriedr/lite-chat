@@ -49,9 +49,9 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             password: await hashPassword(body.password),
             avatar: process.env.ROBOHASH_URL + body.username,
             provider: null,
-            email_verified: false,
-            google_id: null,
-            github_id: null
+            isEmailVerified: false,
+            googleId: null,
+            githubId: null
         })
 
         const token = jwt.sign({
