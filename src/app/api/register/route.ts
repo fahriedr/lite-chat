@@ -68,7 +68,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             avatar: data.avatar,
         }
 
-        return CustomSuccessResponse('Success', 200, 
+        return CustomSuccessResponse("Success", 200, 
             {
                 user: res,
                 token: token
